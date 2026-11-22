@@ -19,8 +19,8 @@ import sys, re, json, email, datetime, pathlib, time, urllib.request
 from html.parser import HTMLParser
 
 DAYS = 'حنثرخ'
-ALLCOLS = ['%02d' % n for n in range(0, 50)]   # للفحص (--scan) فقط
-DEFCOLS = ['00', '06', '08', '09', '22', '33']        # 00 اللغة الإنجليزية ومتطلبات الجامعة، 06 الأعمال، 08 العلوم، 09 الحاسب، 22 الهندسة
+ALLCOLS = ['%02d' % n for n in range(0, 100)]   # للفحص (--scan) فقط
+DEFCOLS = ['00', '06', '08', '09', '22', '33', '74']        # 00 اللغة الإنجليزية ومتطلبات الجامعة، 06 الأعمال، 08 العلوم، 09 الحاسب، 22 الهندسة
 NMC = {}
 TYPES = {'نظري', 'عملي', 'بحث', 'اختياري', 'تدريب', 'محاضرة', 'معمل'}
 DX = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4}
