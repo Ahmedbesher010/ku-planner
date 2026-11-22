@@ -5,6 +5,7 @@
   python build_sections.py --fetch
   python build_sections.py --fetch --cols 22,00                (كليات محددة؛ الافتراضي كل الكليات 00-49 والجنسان)
   python build_sections.py --fetch --term 144830              (فرض رمز فصل معيّن)
+  python build_sections.py --peek 22                           (يطبع صفوفاً خاماً من بانر لفحص الأعمدة)
   python build_sections.py --scan                             (يبحث عن الكليات التي فيها شعب: 01 إلى 40)
 الاستخدام (من ملفات):
   python build_sections.py data.js
@@ -19,6 +20,8 @@ from html.parser import HTMLParser
 
 DAYS = 'حنثرخ'
 ALLCOLS = ['%02d' % n for n in range(0, 50)]
+NMC = {}
+TYPES = {'نظري', 'عملي', 'بحث', 'اختياري', 'تدريب', 'محاضرة', 'معمل'}
 DX = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4}
 ST = {'available': 'متاحه', 'full': 'ممتلئة'}
 
@@ -46,6 +49,7 @@ def banner(html, m, sx=''):
         except ValueError: u = 0
         o = m.setdefault(sx + ':' + t[1], {'num': t[0], 'crn': t[1], 'sec': t[2], 'st': t[3], 'u': u, 't': t[9], 'col': t[11], 'maj': t[12], 'm': []})
         if sx: o['sx'] = sx
+        if t[4]: NMC.setdefault(t[0], t[4])
         ab = [x.strip() for x in t[8].split('-')]
         if len(ab) != 2 or not all(x[:4].isdigit() for x in ab): continue
         for ch in t[6].split():
@@ -85,6 +89,13 @@ def read(path):
         except UnicodeDecodeError: pass
     return b.decode('utf-8', 'replace')
 
+def names_from(secs):
+    # يلتقط اسم المادة من العمود الخامس إن بدا اسماً (وليس نوعاً أو اسم كلية متكرراً)
+    nums = {x['num'] for x in secs}; cnt = {}
+    for n in nums:
+        if NMC.get(n): cnt.setdefault(NMC[n], set()).add(n)
+    return {n: NMC[n] for n in sorted(nums) if NMC.get(n) and NMC[n] not in TYPES and re.search(r'[\u0600-\u06FF]{3}', NMC[n]) and len(cnt[NMC[n]]) <= 3}
+
 def kfu_data(txt, m, sexes):
     j = json.loads(txt[txt.index('{'):txt.rindex('}') + 1])
     for x in j['sections']:
@@ -100,13 +111,14 @@ def kfu_data(txt, m, sexes):
 
 def main():
     a = sys.argv[1:]; out = 'sections.json'; date = None; women = False; files = []; i = 0
-    fetch = False; term = None; cols = ALLCOLS; sexes = ['11', '12']; scan = False; force = False; only_changed = False
+    fetch = False; peek = None; term = None; cols = ALLCOLS; sexes = ['11', '12']; scan = False; force = False; only_changed = False
     while i < len(a):
         if a[i] == '--women': sexes = ['12']
         elif a[i] == '--men': sexes = ['11']
         elif a[i] == '-o': i += 1; out = a[i]
         elif a[i] == '--date': i += 1; date = a[i]
         elif a[i] == '--fetch': fetch = True
+        elif a[i] == '--peek': i += 1; peek = a[i]
         elif a[i] == '--force': force = True
         elif a[i] == '--only-if-changed': only_changed = True
         elif a[i] == '--term': i += 1; term = a[i]
@@ -114,6 +126,11 @@ def main():
         elif a[i] == '--scan': fetch = scan = True; cols = ALLCOLS
         else: files.append(a[i])
         i += 1
+    if peek:
+        term = term or current_term() or sys.exit('تعذر معرفة رمز الفصل')
+        p = P(); p.feed(decode(get(BANNER.format(t=term, c=peek, s='11'))))
+        for r in [t for t in p.out if len(t) == 13 and t[1].isdigit()][:4]: print(r)
+        return
     if not files and not fetch: sys.exit(__doc__)
     m = {}; dates = []
     for f in files:
@@ -157,7 +174,7 @@ def main():
         print('لا تغيير في الشعب، لم أعدّل الملف.'); return
     ua = now if changed or not oldj.get('updated_at') else oldj['updated_at']
     with open(out, 'w', encoding='utf-8') as fh:
-        json.dump({'updated': date or ua[:10], 'updated_at': ua, 'checked_at': now, 'term': term or '', 'counts': counts, 'secs': secs}, fh, ensure_ascii=False, separators=(',', ':'))
+        json.dump({'updated': date or ua[:10], 'updated_at': ua, 'checked_at': now, 'term': term or '', 'counts': counts, 'names': names_from(secs), 'secs': secs}, fh, ensure_ascii=False, separators=(',', ':'))
     print('تم: %d شعبة، آخر تغيير %s، الملف %s' % (len(secs), ua, out))
 
 main()
