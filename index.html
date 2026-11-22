@@ -279,7 +279,7 @@ function go(t,q){document.querySelectorAll('section[data-tb]').forEach(s=>s.clas
 function hero(u){$('hs1').textContent=D.size;$('hs2').textContent=u;$('hs3').textContent=Math.max(0,136-u);$('hbar').style.width=Math.min(100,u/136*100)+'%'}
 function upd(){const cap=+S.cap,o=$('out'),u=(R&&!o.hidden)?R.reduce((a,x)=>a+x.c.u,0):C.filter(c=>SEL.has(c.n)).reduce((a,c)=>a+c.u,0);$('fb').hidden=!cap;$('fu').textContent=u;$('fc').textContent=cap;$('ff').style.width=Math.min(100,u/(cap||1)*100)+'%'}
 function r1Keep(){const o=[...document.querySelectorAll('#lv details')].map(x=>x.open);r1();document.querySelectorAll('#lv details').forEach((x,i)=>x.open=o[i])}
-let META={};
+let META={};const termTxt=t=>{const k={'10':'الأول','20':'الثاني','30':'الصيفي'}[String(t).slice(4,6)];return k?'الفصل '+k+' '+String(t).slice(0,4)+'هـ':''};
 const dfmt=(t,o)=>{const d=new Date(t);return isNaN(d)?'':d.toLocaleString('ar-u-ca-gregory',o)};
 function ago(t){const s=(Date.now()-new Date(t))/1e3;if(isNaN(s))return'';const f=new Intl.RelativeTimeFormat('ar',{numeric:'auto'});return s<90?'الآن':s<3600?f.format(-Math.round(s/60),'minute'):s<172800?f.format(-Math.round(s/3600),'hour'):f.format(-Math.round(s/86400),'day')}
 function updTxt(){const t=META.updated_at||(UPD&&UPD+'T12:00:00');return t?'آخر تغيير في الشعب: '+dfmt(t,META.updated_at?{dateStyle:'long',timeStyle:'short'}:{dateStyle:'long'}):''}
@@ -288,11 +288,11 @@ function updNote(){const f=$('fr'),ref=META.checked_at||META.updated_at||(UPD&&U
  if(!SECS.length){f.className='fresh';f.lastChild.textContent='جارٍ تحميل الشعب…';$('upd').textContent='';return}
  const h=(Date.now()-new Date(ref))/36e5,c=isNaN(h)?'':h<=36?'ok':h<=120?'warn':'old';
  f.className='fresh '+c;f.lastChild.textContent=(c=='old'?'قد تكون الشعب قديمة':'الشعب محدّثة')+(isNaN(h)?'':' · '+ago(ref));
- $('upd').textContent=[updTxt(),META.checked_at?'آخر فحص '+ago(META.checked_at):'',SECS.length+' شعبة'].filter(Boolean).join(' · ')}
+ $('upd').textContent=[META.term?termTxt(META.term):'',updTxt(),META.checked_at?'آخر فحص '+ago(META.checked_at):'',SECS.length+' شعبة'].filter(Boolean).join(' · ')}
 function syncSx(){document.querySelectorAll('[data-sx]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sx==(S.sx||'11')))}
 try{localStorage.removeItem('cheSecs')}catch(e){}
 const fail=()=>{if(!SECS.length)$('upd').textContent='تعذر تحميل بيانات الشعب.'};
-fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){SECS=j.secs;UPD=j.updated||'';META={updated_at:j.updated_at||(!j.updated&&lm?new Date(lm).toISOString():''),checked_at:j.checked_at||''};NMX=j.names||{};updNote();restoreR();if($('fb').dataset.t==4)brRender(1)}else fail()}).catch(fail);
+fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){SECS=j.secs;UPD=j.updated||'';META={updated_at:j.updated_at||(!j.updated&&lm?new Date(lm).toISOString():''),checked_at:j.checked_at||'',term:j.term||''};NMX=j.names||{};updNote();restoreR();if($('fb').dataset.t==4)brRender(1)}else fail()}).catch(fail);
 setInterval(()=>SECS.length&&updNote(),6e4);
 function r3Keep(){const o=[...document.querySelectorAll('#man details')].map(x=>x.open);r3();document.querySelectorAll('#man details').forEach((x,i)=>x.open=o[i]);}
 document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
@@ -372,11 +372,11 @@ async function run0(){
   pool=left.filter(c=>ov.has(c.n)||((c.g=='U'||(c.g=='E'?mv>=7:c.v==mv||(lag&&c.v==mv+1)))&&c.p.every(r=>D.has(r))))}
  else{pool=left.filter(c=>SEL.has(c.n));pool.filter(c=>!ov.has(c.n)&&!c.p.every(r=>D.has(r))).forEach(c=>msgs.push(note(`${c.a}: لم تنهِ المتطلب (${c.p.filter(r=>!D.has(r)).map(r=>BY[r]?BY[r].a:r).join('، ')}). فعّل التجاوز لها إن كان لديك تجاوز.`,1)));
   pool=pool.filter(c=>ov.has(c.n)||c.p.every(r=>D.has(r)))}
- const secs={},cands=[];
+ const secs={},cands=[],notOff=[];
  pool.sort((a,b)=>a.v-b.v).forEach(c=>{const r=secsFor(c,full);
   if(r.good.length){secs[c.n]=r.good;cands.push(c)}
-  else if(!auto||c.v<=8&&!c.g)msgs.push(note(`${c.a} (${c.n}): ${!r.all?'غير موجودة في الشعب المطروحة':!r.mine?'شعبها مخصصة لتخصصات أخرى':r.full&&!full?`كل شعبها ممتلئة (${r.full}). اختر «المتاحة والممتلئة» لعرضها`:'شعبها غير متاحة للتسجيل'}.`))});
- solve.cut=0;const best=solve(cands,secs,cap,ov,auto,need);
+  else if(!auto||c.v<=8&&!c.g){if(!r.all)notOff.push(c);else msgs.push(note(`${c.a} (${c.n}): ${!r.mine?'شعبها مخصصة لتخصصات أخرى':r.full&&!full?`كل شعبها ممتلئة (${r.full}). اختر «المتاحة والممتلئة» لعرضها`:'شعبها غير متاحة للتسجيل'}.`))}});
+ if(notOff.length)msgs.unshift(note(`لم تُطرح هذا الفصل${META.term?' ('+termTxt(META.term)+')':''}: ${notOff.map(c=>c.a+' ('+c.n+')').join('، ')}. غالباً تُطرح في فصل آخر. للتأكد ابحث عن رمزها في «تصفح الشعب ← كل المواد».`));solve.cut=0;const best=solve(cands,secs,cap,ov,auto,need);
  if(solve.cut)msgs.push(note('كثرة الخيارات: اختُصر البحث وقد لا يكون الجدول هو الأمثل. قلّل عدد المواد أو الشعب.'));
  R=best.sort((a,b)=>a.c.v-b.c.v).map(x=>({c:x.c,s:x.s,opts:secs[x.c.n]}));
  const got=new Set(R.map(x=>x.c.n));
@@ -412,21 +412,21 @@ const cname=n=>BY[n]?BY[n].a:(NM[n]||NMX[n]||'');
 const nrm=s=>String(s||'').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').toLowerCase();
 const okMaj=s=>{const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2)));return(!s.maj||own(s.maj,'2204'))&&(!s.col||own(s.col,'22'))};
 function bg(){const k=(S.sx||'11')+':'+SECS.length+':'+(META.checked_at||UPD);if(k!=BGK){BGK=k;const m=new Map();SECS.forEach(s=>{if(s.sx&&s.sx!=(S.sx||'11'))return;(m.get(s.num)||m.set(s.num,{n:s.num,secs:[]}).get(s.num)).secs.push(s)});BGM=[...m.values()];BGM.forEach(g=>g.secs.sort((a,b)=>(a.sec>b.sec)-(a.sec<b.sec)))}return BGM}
-function bfilter(){const terms=nrm(BR.q).split(/\s+/).filter(Boolean),out=[];BR.hid=0;
- for(const g of bg()){const c=BY[g.n];if(BR.scope=='p'&&!(c&&!D.has(c.n)))continue;if(BR.col&&g.n.slice(0,2)!=BR.col)continue;
+function bfilter(){const terms=nrm(BR.q).split(/\s+/).filter(Boolean),out=[],hb={};
+ for(const g of bg()){const c=BY[g.n];if(BR.scope=='p'&&!(c&&!D.has(c.n)))continue;
   let secs=g.secs.filter(s=>s.m.length);if(BR.scope=='p')secs=secs.filter(okMaj);if(BR.av)secs=secs.filter(s=>s.st=='متاحه');
   if(BR.day!=='')secs=secs.filter(s=>s.m.some(m=>m.d==+BR.day));
-  if(BR.cf&&R){const n0=secs.length;secs=secs.filter(s=>R.every(y=>y.c.n==g.n||!clash(y.s,s)));BR.hid+=n0-secs.length}
+  if(BR.cf&&R){const n0=secs.length;secs=secs.filter(s=>R.every(y=>y.c.n==g.n||!clash(y.s,s)));{const k=g.n.slice(0,2);hb[k]=(hb[k]||0)+n0-secs.length}}
   const hay=nrm(g.n+' '+cname(g.n));for(const t of terms){if(!hay.includes(t))secs=secs.filter(s=>nrm(s.crn+' '+(s.t||'')).includes(t))}
   if(secs.length)out.push({g,secs})}
- return out.sort((a,b)=>BR.scope=='p'?(BY[a.g.n].v-BY[b.g.n].v||(a.g.n>b.g.n?1:-1)):(a.g.n>b.g.n?1:-1))}
+ out.hb=hb;return out.sort((a,b)=>BR.scope=='p'?(BY[a.g.n].v-BY[b.g.n].v||(a.g.n>b.g.n?1:-1)):(a.g.n>b.g.n?1:-1))}
 const inR=crn=>!!R&&R.some(x=>x.s.crn==crn);
 function brows(secs){return secs.map(s=>{const on=inR(s.crn),ok=s.st=='متاحه';return `<label class="sr${on?' on':''}"><input type="checkbox" data-ad="${s.crn}"${on?' checked':''}><span class="sm"><b>${s.t||'مدرس غير محدد'}</b><small>شعبة ${s.sec} · CRN ${s.crn}${BR.scope=='a'&&!okMaj(s)?' · مخصصة لتخصصات أخرى':''}</small><span class="dy">${s.m.map(m=>`<i>${DN[m.d]} ${hm(m.s)}–${hm(m.e)}</i>`).join('')}</span></span><i class="chip ${ok?'ok':'no'}">${ok?'متاحة':s.st=='ممتلئة'?'ممتلئة':'غير متاحة'}</i></label>`}).join('')}
 function bcard(r,open){const g=r.g,c=BY[g.n],u=c?c.u:g.secs[0].u,done=c&&D.has(c.n),pre=c&&!done&&!c.p.every(x=>D.has(x));
- return `<details data-bn="${g.n}"${open?' open':''}><summary><b>${cname(g.n)||g.n}</b><small>${g.n} · ${u} س${c?' · '+lvn(c.v):''}</small><span class="cc"><i class="chip">${r.secs.length} شعبة</i>${R&&R.some(x=>x.c.n==g.n)?'<i class="chip ok">في جدولك</i>':''}${done?'<i class="chip">أنهيتها</i>':''}${pre?'<i class="chip wr">متطلب ناقص</i>':''}</span></summary><div class="bsx">${open?brows(r.secs):''}</div></details>`}
+ return `<details data-bn="${g.n}"${open?' open':''}><summary><b>${cname(g.n)||g.n}</b><small>${cname(g.n)?g.n+' · ':'اسم المادة غير متوفر · '}${u} س${c?' · '+lvn(c.v):''}</small><span class="cc"><i class="chip">${r.secs.length} شعبة</i>${R&&R.some(x=>x.c.n==g.n)?'<i class="chip ok">في جدولك</i>':''}${done?'<i class="chip">أنهيتها</i>':''}${pre?'<i class="chip wr">متطلب ناقص</i>':''}</span></summary><div class="bsx">${open?brows(r.secs):''}</div></details>`}
 function brRender(keep){const L=$('bl');if(!SECS.length){L.innerHTML=note('جارٍ تحميل الشعب…');$('bm').hidden=true;return}
- const cl=$('bcl');if(cl.options.length<2){[...new Set([...CNO,...bg().map(g=>g.n.slice(0,2))])].sort((a,b)=>(CNO.includes(a)?CNO.indexOf(a):99)-(CNO.includes(b)?CNO.indexOf(b):99)||(a>b?1:-1)).forEach(k=>cl.add(new Option(CN[k]||'كلية '+k,k)))}
- const open=new Set([...L.querySelectorAll('details[open]')].map(d=>d.dataset.bn)),res=bfilter();BRV={};res.forEach(r=>BRV[r.g.n]=r.secs);if(!keep)BR.n=30;
+
+ const open=new Set([...L.querySelectorAll('details[open]')].map(d=>d.dataset.bn)),all=bfilter(),res=BR.col?all.filter(r=>r.g.n.slice(0,2)==BR.col):all;BR.hid=Object.keys(all.hb).reduce((a,k)=>a+(!BR.col||k==BR.col?all.hb[k]:0),0);BRV={};res.forEach(r=>BRV[r.g.n]=r.secs);const cl=$('bcl'),cnt={};all.forEach(r=>{const k=r.g.n.slice(0,2);cnt[k]=(cnt[k]||0)+1});cl.innerHTML='<option value="">كل الكليات ('+all.length+')</option>'+CNO.filter(k=>cnt[k]||k==BR.col).map(k=>'<option value="'+k+'">'+CN[k]+' ('+(cnt[k]||0)+')</option>').join('');cl.value=BR.col;if(!keep)BR.n=30;
  const fl=BR.q||BR.col||BR.day!==''||BR.av,bh=$('bh');bh.hidden=!(BR.hid||fl);bh.innerHTML=(BR.hid?`أُخفيت ${BR.hid} شعبة تتعارض مع جدولك <button data-bx="cf">عرضها</button>`:'')+(fl?'<button data-bx="rs">إعادة ضبط الفلاتر</button>':'');
  $('bc').textContent=`(${res.length} مادة، ${res.reduce((a,r)=>a+r.secs.length,0)} شعبة)`;
  L.innerHTML=res.length?res.slice(0,BR.n).map(r=>bcard(r,open.has(r.g.n))).join(''):note(BR.scope=='p'?'لا توجد شعب مطابقة لموادك المتبقية. جرّب «كل المواد» أو غيّر الفلاتر.':'لا توجد نتائج مطابقة.');$('bm').hidden=res.length<=BR.n}

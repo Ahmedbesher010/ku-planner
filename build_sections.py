@@ -3,10 +3,10 @@
 
 الاستخدام (سحب تلقائي من بانر، يكتشف رمز الفصل الحالي بنفسه):
   python build_sections.py --fetch
-  python build_sections.py --fetch --cols 22,00                (كليات محددة؛ الافتراضي كل الكليات 00-49 والجنسان)
+  python build_sections.py --fetch --cols 22,00                (كليات محددة؛ الافتراضي 00,06,08,09,22 والجنسان)
   python build_sections.py --fetch --term 144830              (فرض رمز فصل معيّن)
   python build_sections.py --peek 22                           (يطبع صفوفاً خاماً من بانر لفحص الأعمدة)
-  python build_sections.py --scan                             (يبحث عن الكليات التي فيها شعب: 01 إلى 40)
+  python build_sections.py --scan -o /tmp/scan.json           (يفحص كل الكليات 00 إلى 49 ويحفظ النتيجة في ملف مؤقت)
 الاستخدام (من ملفات):
   python build_sections.py data.js
   python build_sections.py engineering.html science.html cs.html
@@ -19,7 +19,8 @@ import sys, re, json, email, datetime, pathlib, time, urllib.request
 from html.parser import HTMLParser
 
 DAYS = 'حنثرخ'
-ALLCOLS = ['%02d' % n for n in range(0, 50)]
+ALLCOLS = ['%02d' % n for n in range(0, 50)]   # للفحص (--scan) فقط
+DEFCOLS = ['00', '06', '08', '09', '22']        # 00 اللغة الإنجليزية ومتطلبات الجامعة، 06 الأعمال، 08 العلوم، 09 الحاسب، 22 الهندسة
 NMC = {}
 TYPES = {'نظري', 'عملي', 'بحث', 'اختياري', 'تدريب', 'محاضرة', 'معمل'}
 DX = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4}
@@ -71,10 +72,29 @@ def get(url):
     with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
         return r.read()
 
-def current_term():
-    # صفحة الفهرس تضع رمز الفصل الحالي في div مخفي، فيتغير الرمز هنا تلقائياً كل فصل
-    m = re.search(r'id="studyYearDiv"[^>]*>\s*(\d{6})', decode(get(LIST)))
-    return m.group(1) if m else None
+def next_term(t):
+    # الرمز = سنة هجرية (4 أرقام) + 10 أول / 20 ثاني / 30 صيفي، مثل 144820
+    y, k = int(t[:4]), int(t[4:6])
+    return '%d%d' % (y, k + 10) if k < 30 else '%d10' % (y + 1)
+
+def has_rows(term):
+    try:
+        p = P(); p.feed(decode(get(BANNER.format(t=term, c='22', s='11'))))
+        return any(len(t) == 13 and t[1].isdigit() for t in p.out)
+    except Exception:
+        return False
+
+def current_term(prev=''):
+    # صفحة الفهرس تضع رمز الفصل الحالي في div مخفي، فيتغير الرمز هنا تلقائياً كل فصل.
+    # شبكة أمان: إن لم تُرجع هذه الصفحة شعباً (لم يُحدَّث الـ div بعد) جرّب الفصل التالي،
+    # وإن تعذّرت قراءة الصفحة نفسها فابدأ من آخر فصل محفوظ.
+    try: m = re.search(r'id="studyYearDiv"[^>]*>\s*(\d{6})', decode(get(LIST)))
+    except Exception: m = None
+    t = m.group(1) if m else (prev if re.fullmatch(r'\d{6}', prev or '') else None)
+    if not t: return None
+    if has_rows(t): return t
+    nx = next_term(t)
+    return nx if has_rows(nx) else t
 
 def read(path):
     b = pathlib.Path(path).read_bytes()
@@ -111,7 +131,7 @@ def kfu_data(txt, m, sexes):
 
 def main():
     a = sys.argv[1:]; out = 'sections.json'; date = None; women = False; files = []; i = 0
-    fetch = False; peek = None; term = None; cols = ALLCOLS; sexes = ['11', '12']; scan = False; force = False; only_changed = False
+    fetch = False; peek = None; term = None; cols = DEFCOLS; sexes = ['11', '12']; scan = False; force = False; only_changed = False
     while i < len(a):
         if a[i] == '--women': sexes = ['12']
         elif a[i] == '--men': sexes = ['11']
@@ -133,6 +153,8 @@ def main():
         return
     if not files and not fetch: sys.exit(__doc__)
     m = {}; dates = []
+    try: oldj = json.load(open(out, encoding='utf-8'))
+    except Exception: oldj = {}
     for f in files:
         txt = read(f)
         if 'KFU_DATA' in txt[:200]: dates.append(kfu_data(txt, m, sexes))
@@ -142,7 +164,7 @@ def main():
         print(f, '->', len(m), 'شعبة حتى الآن')
     counts = {}; failed = []
     if fetch:
-        term = term or current_term() or sys.exit('تعذر معرفة رمز الفصل، مرّره بـ --term 144820')
+        term = term or current_term(oldj.get('term', '')) or sys.exit('تعذر معرفة رمز الفصل، مرّره بـ --term 144820')
         print('رمز الفصل:', term)
         for sx in sexes:
             for c in cols:
@@ -158,23 +180,27 @@ def main():
         dates.append(datetime.date.today().isoformat())
     if not m: sys.exit('لم أجد أي شعبة في الملفات.')
     secs = sorted(m.values(), key=lambda x: (x.get('sx', ''), x['crn']))
-    try: oldj = json.load(open(out, encoding='utf-8'))
-    except Exception: oldj = {}
     old = oldj.get('secs', [])
+    # نفس النطاق = نفس الفصل ونفس الكليات؛ عند تغيّر أيٍّ منهما (فصل جديد أو تعديل قائمة الكليات) يُسمح باختلاف العدد
+    same_scope = bool(fetch) and oldj.get('term') == term and oldj.get('cols') == cols and oldj.get('sexes') == sexes
     if fetch and failed and not force:
         sys.exit('تعذر سحب: %s. لن أعدّل الملف حتى لا تضيع شعب. أعد المحاولة أو استخدم --force.' % ' '.join(failed))
-    if old and not force and len(secs) < 0.5 * len(old):
+    if old and not force and (same_scope or not fetch) and len(secs) < 0.5 * len(old):
         sys.exit('عدد الشعب الجديد (%d) أقل بكثير من القديم (%d)، لن أستبدل الملف. استخدم --force لتجاوز ذلك.' % (len(secs), len(old)))
-    if fetch:
+    if fetch and same_scope:
         for k, n in (oldj.get('counts') or {}).items():
             if k not in counts: print('تنبيه: الكلية-الجنس %s كان فيها %d شعبة ولم تعد تُرجع شيئاً (ربما تغيّر الرابط).' % (k, n))
     now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+    nums = {x['num'] for x in secs}
+    names = {n: v for n, v in (oldj.get('names') or {}).items() if n in nums}   # لا يضيع اسم التُقط سابقاً
+    names.update(names_from(secs))
+    scope = {'term': term or '', 'cols': cols if fetch else [], 'sexes': sexes if fetch else []}
     changed = old != secs
-    if only_changed and not changed and (oldj.get('checked_at') or '')[:10] == now[:10]:
+    if only_changed and not changed and oldj.get('cols') == scope['cols'] and (oldj.get('checked_at') or '')[:10] == now[:10]:
         print('لا تغيير في الشعب، لم أعدّل الملف.'); return
     ua = now if changed or not oldj.get('updated_at') else oldj['updated_at']
     with open(out, 'w', encoding='utf-8') as fh:
-        json.dump({'updated': date or ua[:10], 'updated_at': ua, 'checked_at': now, 'term': term or '', 'counts': counts, 'names': names_from(secs), 'secs': secs}, fh, ensure_ascii=False, separators=(',', ':'))
+        json.dump({'updated': date or ua[:10], 'updated_at': ua, 'checked_at': now, **scope, 'counts': counts, 'names': names, 'secs': secs}, fh, ensure_ascii=False, separators=(',', ':'))
     print('تم: %d شعبة، آخر تغيير %s، الملف %s' % (len(secs), ua, out))
 
 main()
