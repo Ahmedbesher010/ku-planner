@@ -101,7 +101,11 @@ button:not(.gh),input[type=number],select{min-height:42px}select{max-width:100%}
 .dz:hover,.dz.dr,.dz:has(input:focus-visible){border-color:var(--ac);background:var(--ps)}.dz b{color:var(--ac)}.dz small{color:var(--mu)}
 .dz input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;padding:0;border:0;min-height:0}
 .col h4 small{color:var(--mu);font-weight:400}
-.ex{display:flex;gap:8px;margin:0 0 10px}.ex button{padding:2px 14px;border-radius:20px;border-color:var(--ln);color:var(--ink);font-size:13px;min-height:36px}.ex button:hover{border-color:var(--ac)}
+.ex{display:flex;gap:8px;margin:0 0 10px}.ex button{padding:2px 14px;border-radius:20px;border-color:var(--ln);color:var(--ink);font-size:13px;min-height:36px}.ex button:hover{border-color:var(--ac)}#sxt{margin-bottom:10px}
+.fresh{display:inline-flex;align-items:center;gap:8px;margin-top:-6px;padding:5px 13px;border-radius:999px;background:rgba(255,255,255,.14);font-size:13px;color:#fff}
+.fresh i{width:9px;height:9px;border-radius:50%;background:#cbd5e1;flex:none}
+.fresh.ok i{background:#4ade80;animation:pl 2s infinite}.fresh.warn i{background:#fbbf24}.fresh.old i{background:#f87171}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}100%{box-shadow:0 0 0 8px rgba(74,222,128,0)}}
 @media(max-width:640px){main{padding:12px}.hero h1{font-size:21px}.chips{flex:1 1 100%}
 .sc table{min-width:0}.sc table,.sc tbody,.sc tr,.sc td{display:block}.sc tr:has(th){display:none}
 .sc tr{border:1px solid var(--ln);border-radius:14px;padding:6px 12px;margin-bottom:10px;background:var(--bg)}
@@ -109,7 +113,7 @@ button:not(.gh),input[type=number],select{min-height:42px}select{max-width:100%}
 .sc td:nth-child(2)::before{content:"المستوى"}.sc td:nth-child(3)::before{content:"CRN"}.sc td:nth-child(4)::before{content:"الشعبة"}
 .sc td:nth-child(5)::before{content:"المدرس"}.sc td:nth-child(6)::before{content:"الوقت"}.sc td:nth-child(7)::before{content:"الساعات"}}
 </style></head><body><main>
-<header class="hero"><div class="top"><div><h1>مخطط التسجيل الذكي</h1><p>الهندسة الكيميائية، جامعة الملك فيصل. جدول بلا تعارض من ملفات الشعب.</p></div><button id="th" class="gh" aria-label="تبديل الوضع الليلي">◐ الوضع</button></div>
+<header class="hero"><div class="top"><div><h1>مخطط التسجيل الذكي</h1><p>الهندسة الكيميائية، جامعة الملك فيصل. جدول بلا تعارض من ملفات الشعب.</p><div class="fresh" id="fr"><i></i><span>جارٍ تحميل الشعب…</span></div></div><button id="th" class="gh" aria-label="تبديل الوضع الليلي">◐ الوضع</button></div>
 <div class="hs"><div><b id="hs1">0</b><small>مادة منتهية</small></div><div><b id="hs2">0</b><small>ساعة منجزة</small></div><div><b id="hs3">136</b><small>ساعة متبقية</small></div></div><div class="hb"><i id="hbar"></i></div></header>
 <nav class="nav" id="tabs" aria-label="المراحل"><button data-go="1" aria-selected="true">خطتي</button><button data-go="2" aria-selected="false">بناء الجدول</button><button data-go="3" aria-selected="false">جدولي<i id="tc"></i></button></nav>
 
@@ -121,14 +125,14 @@ button:not(.gh),input[type=number],select{min-height:42px}select{max-width:100%}
 <div id="ovp" hidden><p class="sub">التجاوز يسمح بتسجيل المادة مع متطلبها أو بدون إنهائه. حدد مواد التجاوز:</p><div class="g" id="ovl"></div></div></section>
 
 <section data-tb="2"><h2>طريقة اختيار المواد</h2>
-<div class="tabs"><button data-t="m" aria-pressed="true">اختيار يدوي</button><button data-t="a" aria-pressed="false">اختيار تلقائي ذكي</button></div>
-<div id="mw"><input type="search" class="q" data-q="man" placeholder="ابحث عن مادة بالاسم أو الرمز…"><div class="ex"><button data-exp="man" data-v="1">فتح الكل</button><button data-exp="man" data-v="0">إغلاق الكل</button></div><div id="man"></div></div><p id="aut" class="sub" hidden>سيفحص البرنامج المواد المتبقية من المستويات السابقة أولاً ثم المستوى الجديد، ويراعي المتطلبات السابقة والمتزامنة وعدم التعارض.</p></section>
+<div class="tabs"><button data-t="a" aria-pressed="true">اختيار تلقائي ذكي</button><button data-t="m" aria-pressed="false">اختيار يدوي</button></div>
+<div id="mw" hidden><input type="search" class="q" data-q="man" placeholder="ابحث عن مادة بالاسم أو الرمز…"><div class="ex"><button data-exp="man" data-v="1">فتح الكل</button><button data-exp="man" data-v="0">إغلاق الكل</button></div><div id="man"></div></div><p id="aut" class="sub">الأولوية لما تبقّى عليك من مستواك الحالي. إن كنتَ متأخراً عن الخطة أضاف البرنامج بعدها مواد المستوى التالي التي لا تتعارض معها، وإن كنتَ ملتزماً بالخطة سجّل لك مواد المستوى القادم فقط. ويراعي المتطلبات السابقة والمتزامنة وعدم التعارض.</p></section>
 
-<section data-tb="2"><h2>بناء الجدول</h2><p class="sub" id="upd"></p>
+<section data-tb="2"><h2>بناء الجدول</h2><div class="tabs" id="sxt"><button data-sx="11" aria-pressed="true">شعب الطلاب</button><button data-sx="12" aria-pressed="false">شعب الطالبات</button></div><p class="sub" id="upd"></p>
 <div class="row"><label>الشعب المسموحة <select id="st"><option value="0">المتاحة فقط</option><option value="1">المتاحة والممتلئة</option></select></label></div>
 <div class="row"><button class="p" id="go">ابنِ الجدول</button><button data-go="1">رجوع</button></div><div id="err"></div></section>
 <section id="out" data-tb="3" hidden></section>
-<section id="emp" data-tb="3"><p class="sub">لم تبنِ جدولاً بعد. اضبط ساعاتك، اختر موادك، ثم ارفع ملفات الشعب.</p><button class="p" data-go="2">ابدأ بناء الجدول</button></section>
+<section id="emp" data-tb="3"><p class="sub">لم تبنِ جدولاً بعد. اضبط ساعاتك ثم اضغط «ابنِ الجدول»، والشعب تُحدَّث تلقائياً.</p><button class="p" data-go="2">ابدأ بناء الجدول</button></section>
 
 <footer class="sub">يعمل كاملاً داخل متصفحك، ولا تُرسل بياناتك لأي جهة.</footer>
 <div id="fb" hidden><span class="fbt">الساعات: <span id="fu">0</span> / <span id="fc">0</span></span><div class="fbar"><i id="ff"></i></div></div>
@@ -217,7 +221,7 @@ const C=RAW.split('\n').map(l=>{const[n,a,u,v,p,c,g]=l.split('|');return{n,a,u:+
 const BY=Object.fromEntries(C.map(c=>[c.n,c])),ALT={'0622-292':'0673-293'},NEED={E:3,U:2};
 const LN={9:'اختياري قسم (3 مواد)',10:'اختياري جامعة (مادتان)'},DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
 const $=id=>document.getElementById(id),lvn=v=>LN[v]||'المستوى '+v;
-let S={done:[],cap:'',ov:[],ovOn:false},mode='m',SEL=new Set(),IDX={},R=null,FULL=false;
+let S={done:[],cap:'',ov:[],ovOn:false,sx:'11'},mode='a',SEL=new Set(),IDX={},R=null,FULL=false;
 try{Object.assign(S,JSON.parse(localStorage.getItem('chePlan')||'{}'))}catch(e){}
 const D=new Set(S.done),save=()=>{S.done=[...D];S.sel=[...SEL];try{localStorage.setItem('chePlan',JSON.stringify(S))}catch(e){}};
 SEL=new Set(S.sel||[]);const hm=m=>String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
@@ -250,18 +254,29 @@ function go(t,q){document.querySelectorAll('section[data-tb]').forEach(s=>s.clas
 function hero(u){$('hs1').textContent=D.size;$('hs2').textContent=u;$('hs3').textContent=Math.max(0,136-u);$('hbar').style.width=Math.min(100,u/136*100)+'%'}
 function upd(){const cap=+S.cap,o=$('out'),u=(R&&!o.hidden)?R.reduce((a,x)=>a+x.c.u,0):C.filter(c=>SEL.has(c.n)).reduce((a,c)=>a+c.u,0);$('fb').hidden=!cap;$('fu').textContent=u;$('fc').textContent=cap;$('ff').style.width=Math.min(100,u/(cap||1)*100)+'%'}
 function r1Keep(){const o=[...document.querySelectorAll('#lv details')].map(x=>x.open);r1();document.querySelectorAll('#lv details').forEach((x,i)=>x.open=o[i])}
-function updTxt(){if(!UPD)return'';const d=new Date(UPD+'T12:00:00');return'آخر تحديث للشعب: '+(isNaN(d)?UPD:d.toLocaleDateString('ar-u-ca-gregory',{day:'numeric',month:'long',year:'numeric'}))}
-function updNote(){$('upd').textContent=SECS.length?updTxt()+' · '+SECS.length+' شعبة':'جارٍ تحميل الشعب…'}
+let META={};
+const dfmt=(t,o)=>{const d=new Date(t);return isNaN(d)?'':d.toLocaleString('ar-u-ca-gregory',o)};
+function ago(t){const s=(Date.now()-new Date(t))/1e3;if(isNaN(s))return'';const f=new Intl.RelativeTimeFormat('ar',{numeric:'auto'});return s<90?'الآن':s<3600?f.format(-Math.round(s/60),'minute'):s<172800?f.format(-Math.round(s/3600),'hour'):f.format(-Math.round(s/86400),'day')}
+function updTxt(){const t=META.updated_at||(UPD&&UPD+'T12:00:00');return t?'آخر تغيير في الشعب: '+dfmt(t,META.updated_at?{dateStyle:'long',timeStyle:'short'}:{dateStyle:'long'}):''}
+function upS(){const t=META.checked_at||META.updated_at;return t?'آخر فحص للشعب '+ago(t):updTxt()}
+function updNote(){const f=$('fr'),ref=META.checked_at||META.updated_at||(UPD&&UPD+'T12:00:00');
+ if(!SECS.length){f.className='fresh';f.lastChild.textContent='جارٍ تحميل الشعب…';$('upd').textContent='';return}
+ const h=(Date.now()-new Date(ref))/36e5,c=isNaN(h)?'':h<=36?'ok':h<=120?'warn':'old';
+ f.className='fresh '+c;f.lastChild.textContent=(c=='old'?'قد تكون الشعب قديمة':'الشعب محدّثة')+(isNaN(h)?'':' · '+(META.checked_at?'آخر فحص ':'آخر تحديث ')+ago(ref));
+ $('upd').textContent=[updTxt(),META.checked_at?'آخر فحص '+ago(META.checked_at):'',SECS.length+' شعبة'].filter(Boolean).join(' · ')}
+function syncSx(){document.querySelectorAll('[data-sx]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sx==(S.sx||'11')))}
 try{localStorage.removeItem('cheSecs')}catch(e){}
 const fail=()=>{if(!SECS.length)$('upd').textContent='تعذر تحميل بيانات الشعب.'};
-fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){SECS=j.secs;UPD=j.updated||(lm?new Date(lm).toISOString().slice(0,10):'');updNote()}else fail()}).catch(fail);
+fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){SECS=j.secs;UPD=j.updated||'';META={updated_at:j.updated_at||(!j.updated&&lm?new Date(lm).toISOString():''),checked_at:j.checked_at||''};updNote()}else fail()}).catch(fail);
+setInterval(()=>SECS.length&&updNote(),6e4);
 function r3Keep(){const o=[...document.querySelectorAll('#man details')].map(x=>x.open);r3();document.querySelectorAll('#man details').forEach((x,i)=>x.open=o[i]);}
 document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
  if(d.all){const cs=C.filter(c=>c.v==d.all),all=cs.every(c=>D.has(c.n));cs.forEach(c=>all?D.delete(c.n):D.add(c.n));save();r1Keep();$('lv').querySelectorAll('details')[lvls.indexOf(+d.all)].open=true}
  else if(d.sall){const cap=+S.cap;let used=C.filter(x=>SEL.has(x.n)).reduce((a,x)=>a+x.u,0),skip=0;
   C.filter(c=>c.v==d.sall&&!D.has(c.n)&&!SEL.has(c.n)).forEach(c=>{if(used+c.u<=cap){SEL.add(c.n);used+=c.u}else skip++});
   $('err').innerHTML=skip?note(`تم تخطي ${skip} مادة لتجاوزها الساعات المتاحة.`):'';r3Keep();}
- else if(d.t){mode=d.t;document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t==mode));$('mw').hidden=mode!='m';$('aut').hidden=mode=='m'}
+ else if(d.sx){S.sx=d.sx;save();syncSx()}
+ else if(d.t){mode=d.t;document.querySelectorAll('.tabs [data-t]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t==mode));$('mw').hidden=mode!='m';$('aut').hidden=mode=='m'}
  else if(t.id=='xp'||t.id=='xc')exp(t.id=='xp');
  else if(d.go)go(+d.go);
  else if(t.id=='th'){const d=document.documentElement,cur=d.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),nx=cur=='dark'?'light':'dark';d.dataset.theme=nx;try{localStorage.setItem('cheTh',nx)}catch(e){}}
@@ -300,10 +315,10 @@ async function exp(isPng){const m=$('xm');let dl=null;try{dl=await claude.use('d
 /* الحل */
 const clash=(a,b)=>a.m.some(x=>b.m.some(y=>x.d==y.d&&x.s<y.e&&y.s<x.e));
 function secsFor(c,full){const ok=full?['متاحه','ممتلئة']:['متاحه'],all=(IDX[c.n]||[]).concat(ALT[c.n]?IDX[ALT[c.n]]||[]:[]);
- const mine=all.filter(s=>(!s.maj||s.maj.split(' ').includes('2204'))&&(!s.col||s.col.split(' ').includes('22'))),good=mine.filter(s=>ok.includes(s.st)&&s.m.length);
+ const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2))),mine=all.filter(s=>(!s.maj||own(s.maj,'2204'))&&(!s.col||own(s.col,'22'))),good=mine.filter(s=>ok.includes(s.st)&&s.m.length);
  return{all:all.length,mine:mine.length,full:mine.filter(s=>s.st=='ممتلئة').length,good:good.sort((a,b)=>(a.st!='متاحه')-(b.st!='متاحه'))}}
 function solve(cands,secs,cap,ov,auto,need){
- const w=c=>(auto?c.u*(16-c.v):c.u*10+1)+(ov.has(c.n)?60:0)+.5,rem=[];let t=0;
+ const w=c=>(auto?c.u*(ov.has(c.n)||c.v<=solve.mv?1000:c.v==solve.mv+1?30:1):c.u*10+1+(ov.has(c.n)?60:0))+.5,rem=[];let t=0;
  for(let i=cands.length-1;i>=0;i--){t+=w(cands[i]);rem[i]=t}
  const cs=new Set(cands.map(c=>c.n)),ch=[],ex=new Set(),cnt={E:0,U:0};let best=[],bs=-1,nodes=0;
  const coOk=c=>ov.has(c.n)||c.c.every(r=>D.has(r)||(cs.has(r)&&!ex.has(r)));
@@ -323,19 +338,19 @@ async function run0(){
  const err=$('err'),cap=+S.cap;err.innerHTML='';
  if(!cap){err.innerHTML=note('أدخل عدد الساعات المتاحة أولاً.',1);return}
  if(mode=='m'&&!SEL.size){err.innerHTML=note('اختر مادة واحدة على الأقل، أو استخدم الاختيار التلقائي.',1);return}
- const list=SECS;if(!list.length){err.innerHTML=note('بيانات الشعب غير متوفرة حالياً، حاول لاحقاً.',1);return}
+ const list=SECS.filter(s=>!s.sx||s.sx==(S.sx||'11'));if(!list.length){err.innerHTML=note('بيانات الشعب غير متوفرة حالياً، حاول لاحقاً.',1);return}
  IDX={};list.forEach(s=>(IDX[s.num]=IDX[s.num]||[]).push(s));
  const ov=new Set(S.ovOn?S.ov:[]),full=(FULL=$('st').value=='1'),auto=mode=='a',msgs=[],need={};
  for(const g in NEED)need[g]=Math.max(0,NEED[g]-C.filter(c=>c.g==g&&D.has(c.n)).length);
  const left=C.filter(c=>!D.has(c.n));let pool;
- if(auto){const mv=Math.min(...left.filter(c=>!c.g).map(c=>c.v),9);
-  pool=left.filter(c=>ov.has(c.n)||((c.g=='U'||(c.g=='E'?mv>=7:c.v<=mv+1))&&c.p.every(r=>D.has(r))))}
+ if(auto){const mv=Math.min(...left.filter(c=>!c.g).map(c=>c.v),9),lag=C.some(c=>!c.g&&D.has(c.n)&&c.v>=mv);solve.mv=mv;
+  pool=left.filter(c=>ov.has(c.n)||((c.g=='U'||(c.g=='E'?mv>=7:c.v==mv||(lag&&c.v==mv+1)))&&c.p.every(r=>D.has(r))))}
  else{pool=left.filter(c=>SEL.has(c.n));pool.filter(c=>!ov.has(c.n)&&!c.p.every(r=>D.has(r))).forEach(c=>msgs.push(note(`${c.a}: لم تنهِ المتطلب (${c.p.filter(r=>!D.has(r)).map(r=>BY[r]?BY[r].a:r).join('، ')}). فعّل التجاوز لها إن كان لديك تجاوز.`,1)));
   pool=pool.filter(c=>ov.has(c.n)||c.p.every(r=>D.has(r)))}
  const secs={},cands=[];
  pool.sort((a,b)=>a.v-b.v).forEach(c=>{const r=secsFor(c,full);
   if(r.good.length){secs[c.n]=r.good;cands.push(c)}
-  else if(!auto||c.v<=8&&!c.g)msgs.push(note(`${c.a} (${c.n}): ${!r.all?'غير موجودة في الملفات المرفوعة':!r.mine?'شعبها مخصصة لتخصصات أخرى':r.full&&!full?`كل شعبها ممتلئة (${r.full}). اختر «المتاحة والممتلئة» لعرضها`:'شعبها غير متاحة للتسجيل'}.`))});
+  else if(!auto||c.v<=8&&!c.g)msgs.push(note(`${c.a} (${c.n}): ${!r.all?'غير موجودة في الشعب المطروحة':!r.mine?'شعبها مخصصة لتخصصات أخرى':r.full&&!full?`كل شعبها ممتلئة (${r.full}). اختر «المتاحة والممتلئة» لعرضها`:'شعبها غير متاحة للتسجيل'}.`))});
  solve.cut=0;const best=solve(cands,secs,cap,ov,auto,need);
  if(solve.cut)msgs.push(note('كثرة الخيارات: اختُصر البحث وقد لا يكون الجدول هو الأمثل. قلّل عدد المواد أو الشعب.'));
  R=best.sort((a,b)=>a.c.v-b.c.v).map(x=>({c:x.c,s:x.s,opts:secs[x.c.n]}));
@@ -356,7 +371,7 @@ function draw(){
  const t0=Math.floor(mn/60),t1=Math.ceil(mx/60),P=48,H=(t1-t0)*P;
  const hrs=Array.from({length:t1-t0+1},(_,i)=>i+t0);
  const inR=new Set(R.map(x=>x.c.n)),cand=C.filter(c=>!D.has(c.n)&&!inR.has(c.n)&&secsFor(c,FULL).good.length);
- o.innerHTML=`<h2>جدولك <small>${updTxt()}</small></h2><div class="st"><div><b>${R.length}</b>مواد</div><div><b>${units}</b>ساعة</div><div><b>${new Set(R.flatMap(x=>x.s.m.map(m=>m.d))).size}</b>أيام دراسة</div></div>${LAST?note(`حُذفت «${LAST.x.c.a}». <button id="un">تراجع</button>`):''}${msgs.join('')}
+ o.innerHTML=`<h2>جدولك <small>${upS()}</small></h2><div class="st"><div><b>${R.length}</b>مواد</div><div><b>${units}</b>ساعة</div><div><b>${new Set(R.flatMap(x=>x.s.m.map(m=>m.d))).size}</b>أيام دراسة</div></div>${LAST?note(`حُذفت «${LAST.x.c.a}». <button id="un">تراجع</button>`):''}${msgs.join('')}
  <div class="sc"><table><tr><th>المادة</th><th>المستوى</th><th>CRN</th><th>الشعبة</th><th>المدرس</th><th>الوقت</th><th>س</th></tr>${R.map((x,i)=>{
   const ts=new Set(x.alts.map(s=>s.t||'—')),pick=x.alts.length>1?`<br><select data-alt="${i}" aria-label="تغيير الشعبة">${x.alts.map(s=>`<option value="${s.crn}"${s.crn==x.s.crn?' selected':''}>${s.t||'مدرس غير محدد'} | شعبة ${s.sec}${s.st!='متاحه'?' (ممتلئة)':''}</option>`).join('')}</select>${ts.size>1?' <small>اختر المدرس المفضل</small>':''}`:'';
   return `<tr><td><b><i class="dt" style="--h:${i*47%360}"></i>${x.c.a}</b><br><small>${x.c.n}</small><br><button class="gh" data-rm="${i}">حذف</button></td><td><span class="lb">${lvn(x.c.v)}</span></td><td>${x.s.crn}</td><td>${x.s.sec}</td><td>${x.s.t||'غير محدد'}${pick}</td><td>${x.s.m.map(m=>DN[m.d]+' '+hm(m.s)+'-'+hm(m.e)).join('<br>')}</td><td>${x.c.u}</td></tr>`}).join('')}</table></div>
@@ -367,5 +382,5 @@ function draw(){
 let LAST=null;
 function applyF(){document.querySelectorAll('[data-q]').forEach(i=>{const q=i.value.trim();$(i.dataset.q).querySelectorAll('details').forEach(d=>{let n=0;d.querySelectorAll('.g label').forEach(l=>{const h=!q||l.textContent.includes(q);l.classList.toggle('off',!h);h&&n++});d.classList.toggle('off',!!q&&!n);if(q)d.open=n>0})})}
 document.addEventListener('input',e=>e.target.dataset.q!==undefined&&applyF());
-$('cap').value=S.cap;$('ovon').checked=S.ovOn;$('ovp').hidden=!S.ovOn;r1();updNote();go(D.size?2:1,1);try{const th=localStorage.getItem('cheTh');th&&(document.documentElement.dataset.theme=th)}catch(e){}
+$('cap').value=S.cap;$('ovon').checked=S.ovOn;$('ovp').hidden=!S.ovOn;r1();updNote();syncSx();go(D.size?2:1,1);try{const th=localStorage.getItem('cheTh');th&&(document.documentElement.dataset.theme=th)}catch(e){}
 </script></main></body></html>

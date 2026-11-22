@@ -3,7 +3,7 @@
 
 الاستخدام (سحب تلقائي من بانر، يكتشف رمز الفصل الحالي بنفسه):
   python build_sections.py --fetch
-  python build_sections.py --fetch --cols 22,08,09,17,06      (الكليات المطلوبة)
+  python build_sections.py --fetch --cols 22,00                (كليات محددة؛ الافتراضي كل الكليات 00-49 والجنسان)
   python build_sections.py --fetch --term 144830              (فرض رمز فصل معيّن)
   python build_sections.py --scan                             (يبحث عن الكليات التي فيها شعب: 01 إلى 40)
 الاستخدام (من ملفات):
@@ -12,12 +12,13 @@
   python build_sections.py data.js banner1.html --date 2026-11-21
 
 المدخلات المقبولة: data.js (من موقع الشعب) أو صفحات بانر المحفوظة (html / mht).
-الخيارات: --only-if-changed (لا يعدّل الملف إن لم تتغير الشعب) ، --force (تجاوز حماية انخفاض العدد) ، --women (الطالبات) ، -o ملف_الخرج (الافتراضي sections.json) ، --date YYYY-MM-DD ، --women (شعب الطالبات من data.js)
+الخيارات: --men / --women (جنس واحد) ، --only-if-changed ، --force ، -o ملف_الخرج ، --date YYYY-MM-DD
 تاريخ آخر تحديث: أحدث تاريخ بين تاريخ بيانات data.js وتاريخ حفظ صفحات بانر، أو ما تحدده بـ --date."""
 import sys, re, json, email, datetime, pathlib, time, urllib.request
 from html.parser import HTMLParser
 
 DAYS = 'حنثرخ'
+ALLCOLS = ['%02d' % n for n in range(0, 50)]
 DX = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4}
 ST = {'available': 'متاحه', 'full': 'ممتلئة'}
 
@@ -37,13 +38,14 @@ class P(HTMLParser):
 
 def tm(x): return int(x[:2]) * 60 + int(x[2:4])
 
-def banner(html, m):
+def banner(html, m, sx=''):
     p = P(); p.feed(html)
     for t in p.out:
         if len(t) != 13 or not t[1].isdigit(): continue
         try: u = int(t[5])
         except ValueError: u = 0
-        o = m.setdefault(t[1], {'num': t[0], 'crn': t[1], 'sec': t[2], 'st': t[3], 'u': u, 't': t[9], 'col': t[11], 'maj': t[12], 'm': []})
+        o = m.setdefault(sx + ':' + t[1], {'num': t[0], 'crn': t[1], 'sec': t[2], 'st': t[3], 'u': u, 't': t[9], 'col': t[11], 'maj': t[12], 'm': []})
+        if sx: o['sx'] = sx
         ab = [x.strip() for x in t[8].split('-')]
         if len(ab) != 2 or not all(x[:4].isdigit() for x in ab): continue
         for ch in t[6].split():
@@ -83,23 +85,25 @@ def read(path):
         except UnicodeDecodeError: pass
     return b.decode('utf-8', 'replace')
 
-def kfu_data(txt, m, women):
+def kfu_data(txt, m, sexes):
     j = json.loads(txt[txt.index('{'):txt.rindex('}') + 1])
     for x in j['sections']:
-        if x['college'].endswith('F') != women: continue
+        sx = '12' if x['college'].endswith('F') else '11'
+        if sx not in sexes: continue
         mt = []
         for g in x['meetings']:
             for d in g.get('days', []):
                 q = {'d': DX.get(d, -1), 's': (g.get('time') or [0, 0])[0], 'e': (g.get('time') or [0, 0])[1]}
                 if q['d'] >= 0 and g.get('time') and q not in mt: mt.append(q)
-        m[x['crn']] = {'num': x['course'], 'crn': x['crn'], 'sec': x['section'], 'st': ST.get(x['status'], 'x'), 'u': int(x['credits']), 't': x['instructor'], 'm': mt}
+        m[sx + ':' + x['crn']] = {'sx': sx, 'num': x['course'], 'crn': x['crn'], 'sec': x['section'], 'st': ST.get(x['status'], 'x'), 'u': int(x['credits']), 't': x['instructor'], 'm': mt}
     return j['meta']['updated']
 
 def main():
     a = sys.argv[1:]; out = 'sections.json'; date = None; women = False; files = []; i = 0
-    fetch = False; term = None; cols = '22,08,09,17,06'.split(','); scan = False; force = False; only_changed = False
+    fetch = False; term = None; cols = ALLCOLS; sexes = ['11', '12']; scan = False; force = False; only_changed = False
     while i < len(a):
-        if a[i] == '--women': women = True
+        if a[i] == '--women': sexes = ['12']
+        elif a[i] == '--men': sexes = ['11']
         elif a[i] == '-o': i += 1; out = a[i]
         elif a[i] == '--date': i += 1; date = a[i]
         elif a[i] == '--fetch': fetch = True
@@ -107,40 +111,53 @@ def main():
         elif a[i] == '--only-if-changed': only_changed = True
         elif a[i] == '--term': i += 1; term = a[i]
         elif a[i] == '--cols': i += 1; cols = a[i].split(',')
-        elif a[i] == '--scan': fetch = scan = True; cols = ['%02d' % n for n in range(1, 41)]
+        elif a[i] == '--scan': fetch = scan = True; cols = ALLCOLS
         else: files.append(a[i])
         i += 1
     if not files and not fetch: sys.exit(__doc__)
     m = {}; dates = []
     for f in files:
         txt = read(f)
-        if 'KFU_DATA' in txt[:200]: dates.append(kfu_data(txt, m, women))
+        if 'KFU_DATA' in txt[:200]: dates.append(kfu_data(txt, m, sexes))
         else:
             banner(txt, m)
             dates.append(datetime.date.fromtimestamp(pathlib.Path(f).stat().st_mtime).isoformat())
         print(f, '->', len(m), 'شعبة حتى الآن')
+    counts = {}; failed = []
     if fetch:
         term = term or current_term() or sys.exit('تعذر معرفة رمز الفصل، مرّره بـ --term 144820')
-        print('رمز الفصل:', term); found = []
-        for c in cols:
-            try: h = decode(get(BANNER.format(t=term, c=c, s='12' if women else '11')))
-            except Exception as e: print('كلية', c, 'فشل الطلب:', e); continue
-            n0 = len(m); banner(h, m); print('كلية', c, '->', len(m) - n0, 'شعبة')
-            if len(m) > n0: found.append(c)
-            time.sleep(1)
-        if scan: print('الكليات التي فيها شعب:', ','.join(found))
+        print('رمز الفصل:', term)
+        for sx in sexes:
+            for c in cols:
+                for attempt in (1, 2):
+                    try: h = decode(get(BANNER.format(t=term, c=c, s=sx))); break
+                    except Exception as e:
+                        if attempt == 2: failed.append(c + '/' + sx); print('فشل', c, sx, e)
+                        else: time.sleep(3)
+                else: continue
+                n0 = len(m); banner(h, m, sx); n = len(m) - n0
+                if n: counts[c + '-' + sx] = n; print('كلية %s (%s): %d شعبة' % (c, 'طلاب' if sx == '11' else 'طالبات', n))
+                time.sleep(0.4)
         dates.append(datetime.date.today().isoformat())
     if not m: sys.exit('لم أجد أي شعبة في الملفات.')
-    secs = sorted(m.values(), key=lambda x: x['crn'])
-    try: old = json.load(open(out, encoding='utf-8'))['secs']
-    except Exception: old = []
+    secs = sorted(m.values(), key=lambda x: (x.get('sx', ''), x['crn']))
+    try: oldj = json.load(open(out, encoding='utf-8'))
+    except Exception: oldj = {}
+    old = oldj.get('secs', [])
+    if fetch and failed and not force:
+        sys.exit('تعذر سحب: %s. لن أعدّل الملف حتى لا تضيع شعب. أعد المحاولة أو استخدم --force.' % ' '.join(failed))
     if old and not force and len(secs) < 0.5 * len(old):
         sys.exit('عدد الشعب الجديد (%d) أقل بكثير من القديم (%d)، لن أستبدل الملف. استخدم --force لتجاوز ذلك.' % (len(secs), len(old)))
-    if only_changed and old == secs:
+    if fetch:
+        for k, n in (oldj.get('counts') or {}).items():
+            if k not in counts: print('تنبيه: الكلية-الجنس %s كان فيها %d شعبة ولم تعد تُرجع شيئاً (ربما تغيّر الرابط).' % (k, n))
+    now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+    changed = old != secs
+    if only_changed and not changed and (oldj.get('checked_at') or '')[:10] == now[:10]:
         print('لا تغيير في الشعب، لم أعدّل الملف.'); return
-    upd = date or max(dates)
+    ua = now if changed or not oldj.get('updated_at') else oldj['updated_at']
     with open(out, 'w', encoding='utf-8') as fh:
-        json.dump({'updated': upd, 'term': term or '', 'secs': secs}, fh, ensure_ascii=False, separators=(',', ':'))
-    print('تم: %d شعبة، آخر تحديث %s، الملف %s' % (len(m), upd, out))
+        json.dump({'updated': date or ua[:10], 'updated_at': ua, 'checked_at': now, 'term': term or '', 'counts': counts, 'secs': secs}, fh, ensure_ascii=False, separators=(',', ':'))
+    print('تم: %d شعبة، آخر تغيير %s، الملف %s' % (len(secs), ua, out))
 
 main()
