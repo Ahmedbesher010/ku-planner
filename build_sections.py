@@ -77,12 +77,15 @@ def next_term(t):
     y, k = int(t[:4]), int(t[4:6])
     return '%d%d' % (y, k + 10) if k < 30 else '%d10' % (y + 1)
 
-def has_rows(term):
-    try:
-        p = P(); p.feed(decode(get(BANNER.format(t=term, c='22', s='11'))))
-        return any(len(t) == 13 and t[1].isdigit() for t in p.out)
-    except Exception:
-        return False
+def has_rows(term, probe=('22', '08', '06', '00')):
+    # يجرّب أكثر من كلية: فصل قد لا تطرح فيه كلية واحدة شيئاً (الصيفي مثلاً) وهو الفصل الحالي فعلاً
+    for c in probe:
+        try:
+            p = P(); p.feed(decode(get(BANNER.format(t=term, c=c, s='11'))))
+            if any(len(t) == 13 and t[1].isdigit() for t in p.out): return True
+        except Exception:
+            pass
+    return False
 
 def current_term(prev=''):
     # صفحة الفهرس تضع رمز الفصل الحالي في div مخفي، فيتغير الرمز هنا تلقائياً كل فصل.
