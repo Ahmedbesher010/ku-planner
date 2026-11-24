@@ -240,6 +240,11 @@ fieldset:disabled{opacity:.5}
 
 /* ===== 7) البطاقات والمجموعات ===== */
 .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin:10px 0}
+.g.sc{max-height:min(44vh,340px);overflow:auto;overscroll-behavior:contain;margin:0 0 8px;
+ padding:8px;border:1px solid var(--ln);border-radius:var(--r2);background:var(--bg);scrollbar-width:thin}
+#ovlb.lock{opacity:.6}
+#ovlb.lock input{cursor:not-allowed}
+#ovlb small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--mu)}
 .g label{position:relative;padding:10px 13px;border:1px solid var(--ln);border-radius:var(--r2);
  background:var(--sf);cursor:pointer;line-height:1.5;
  transition:border-color .2s,background .2s,box-shadow .2s,transform .14s var(--sp)}
@@ -565,8 +570,8 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 
 <section data-tb="2"><h2>الساعات المتاحة والتجاوز</h2>
 <div class="row"><label>عدد الساعات المتاحة للتسجيل <input type="number" id="cap" min="1" max="25" inputmode="numeric"></label><span class="chips" aria-label="اختيار سريع"><button data-hrs="12">12</button><button data-hrs="15">15</button><button data-hrs="18">18</button><button data-hrs="21">21</button></span>
-<label><input type="checkbox" id="ovon"> لدي تجاوز متطلب</label></div>
-<div id="ovp" hidden><p class="sub">التجاوز يسمح بتسجيل المادة مع متطلبها أو بدون إنهائه. حدد مواد التجاوز:</p><div class="g" id="ovl"></div></div></section>
+<label id="ovlb"><input type="checkbox" id="ovon"> لدي تجاوز متطلب <small id="ovh" hidden></small></label></div>
+<div id="ovp" hidden><p class="sub">التجاوز يسمح بتسجيل المادة مع متطلبها أو بدون إنهائه. حدد مواد التجاوز:</p><input type="search" class="q" data-q="ovl" placeholder="ابحث عن مادة بالاسم أو الرمز…"><div class="g sc" id="ovl"></div><p class="sub" id="ovl-e" hidden>لا توجد مادة مطابقة.</p><p class="sub" id="ovc"></p></div></section>
 
 <section data-tb="2"><h2>طريقة اختيار المواد</h2>
 <div class="tabs"><button data-t="a" aria-pressed="true">اختيار تلقائي ذكي</button><button data-t="m" aria-pressed="false">اختيار يدوي</button></div>
@@ -882,7 +887,7 @@ const C=RAW.split('\n').map(l=>{const[n,a,u,v,p,c,g]=l.split('|');return{n,a,u:+
 const BY=Object.fromEntries(C.map(c=>[c.n,c])),ALT={'0622-292':'0673-293'},NEED={E:3,U:2};
 const LN={9:'اختياري قسم (3 مواد)',10:'اختياري جامعة (مادتان)'},DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
 const $=id=>document.getElementById(id),lvn=v=>LN[v]||'المستوى '+v;
-let S={done:[],cap:'',ov:[],ovOn:false,sx:'11'},mode='a',SEL=new Set(),IDX={},R=null,FULL=false;
+let S={done:[],cap:'',ov:[],ovOn:false,sx:'11'},mode='a',SEL=new Set(),IDX={},R=null,FULL=false,DONEU=0;
 try{Object.assign(S,JSON.parse(localStorage.getItem(SK)||'{}'))}catch(e){}
 const D=new Set(S.done),save=()=>{S.done=[...D];S.sel=[...SEL];try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}};
 SEL=new Set(S.sel||[]);const hm=m=>String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
@@ -893,8 +898,12 @@ function r1(){
  $('lv').innerHTML=lvls.map(v=>{const cs=C.filter(c=>c.v==v),n=cs.filter(c=>D.has(c.n)).length;
   return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary><button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button><div class="g">${cs.map(c=>`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a} <small>${c.n} · ${c.u}س</small></span></label>`).join('')}</div></details>`}).join('');
  const u=C.filter(c=>D.has(c.n)).reduce((a,c)=>a+c.u,0);$('dn').textContent=`(${D.size} مادة، ${u} ساعة)`;hero(u);
- $('ovl').innerHTML=C.filter(c=>!D.has(c.n)).map(c=>`<label><input type="checkbox" data-o="${c.n}"${S.ov.includes(c.n)?' checked':''}><span>${c.a} <small>${c.n}</small></span></label>`).join('');
+ DONEU=u;ovLock();rOv();
  r3()}
+function rOv(){$('ovl').innerHTML=C.filter(c=>!D.has(c.n)).map(c=>`<label><input type="checkbox" data-o="${c.n}"${S.ov.includes(c.n)?' checked':''}><span>${c.a} <small>${c.n}</small></span></label>`).join('');applyF();ovCount()}
+function ovCount(){const n=S.ov.filter(x=>!D.has(x)).length;$('ovc').textContent=n?`اخترت ${n==1?'مادة واحدة':n==2?'مادتين':n+' مواد'} للتجاوز.`:''}
+function ovLock(){const ok=DONEU>=99,b=$('ovon');$('ovlb').classList.toggle('lock',!ok);$('ovh').hidden=ok;
+ if(!ok){$('ovh').textContent=`يتطلب 99 ساعة منجزة · لديك ${DONEU}`;if(S.ovOn){S.ovOn=false;b.checked=false;$('ovp').hidden=true;save()}}}
 function r3(){
  const cap=+S.cap,left=C.filter(c=>!D.has(c.n));SEL.forEach(n=>D.has(n)&&SEL.delete(n));save();
  const used=C.filter(c=>SEL.has(c.n)).reduce((a,c)=>a+c.u,0);
@@ -904,11 +913,11 @@ function r3(){
 
 document.addEventListener('change',e=>{const t=e.target,d=t.dataset;
  if(d.d){t.checked?D.add(d.d):D.delete(d.d);save();r1Keep()}
- else if(d.o){S.ov=S.ov.filter(x=>x!=d.o);t.checked&&S.ov.push(d.o);save()}
+ else if(d.o){S.ov=S.ov.filter(x=>x!=d.o);t.checked&&S.ov.push(d.o);save();ovCount()}
  else if(d.s){const cap=+S.cap,c=BY[d.s];const used=C.filter(x=>SEL.has(x.n)).reduce((a,x)=>a+x.u,0);
   if(t.checked){if(used+c.u>cap){t.checked=false;$('err').innerHTML=note(`لا يمكن إضافة ${c.a}: يتجاوز الساعات المتاحة (${cap}).`,1);return}SEL.add(d.s)}else SEL.delete(d.s);$('err').innerHTML='';r3Keep()}
  else if(t.id=='cap'){S.cap=t.value;save();r3()}
- else if(t.id=='ovon'){S.ovOn=t.checked;$('ovp').hidden=!t.checked;save()}
+ else if(t.id=='ovon'){if(t.checked&&DONEU<99){t.checked=false;toast(`تجاوز المتطلب متاح لمن أنهى 99 ساعة فأكثر · لديك ${DONEU} ساعة`,1);return}S.ovOn=t.checked;$('ovp').hidden=!t.checked;save()}
  else if(t.id=='ac')fillAs(t.value);
  else if(d.alt!==undefined){const x=R[+d.alt];x.s=x.opts.find(s=>s.crn==t.value);LAST=null;draw()}});
 function go(t,q){document.querySelectorAll('section[data-tb]').forEach(s=>s.classList.toggle('off',s.dataset.tb!=t));document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.go==t));$('fb').dataset.t=t;if(t==4)brRender();if(!q)toTop()}
@@ -1106,7 +1115,11 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  if(b.dataset.bx=='cf'){BR.cf=false;$('bcf').checked=false}else{BR.q='';BR.col='';BR.day='';BR.av=false;$('bq').value='';$('bcl').value='';$('bd').value='';$('bav').checked=false}brRender()});
 $('bq').addEventListener('input',e=>{clearTimeout(BT);BT=setTimeout(()=>{BR.q=e.target.value;brRender()},180)});
 $('bcl').onchange=e=>{BR.col=e.target.value;brRender()};$('bd').onchange=e=>{BR.day=e.target.value;brRender()};$('bav').onchange=e=>{BR.av=e.target.checked;brRender()};$('bcf').onchange=e=>{BR.cf=e.target.checked;brRender()};
-function applyF(){document.querySelectorAll('[data-q]').forEach(i=>{const q=i.value.trim();$(i.dataset.q).querySelectorAll('details').forEach(d=>{let n=0;d.querySelectorAll('.g label').forEach(l=>{const h=!q||l.textContent.includes(q);l.classList.toggle('off',!h);h&&n++});d.classList.toggle('off',!!q&&!n);if(q)d.open=n>0})})}
+function applyF(){document.querySelectorAll('[data-q]').forEach(i=>{const q=i.value.trim(),c=$(i.dataset.q);if(!c)return;
+ const ds=c.querySelectorAll('details');
+ if(!ds.length){let n=0;c.querySelectorAll(':scope>label').forEach(l=>{const h=!q||l.textContent.includes(q)||l.querySelector('input:checked');l.classList.toggle('off',!h);h&&n++});
+  const e=$(i.dataset.q+'-e');if(e)e.hidden=n>0;return}
+ ds.forEach(d=>{let n=0;d.querySelectorAll('.g label').forEach(l=>{const h=!q||l.textContent.includes(q);l.classList.toggle('off',!h);h&&n++});d.classList.toggle('off',!!q&&!n);if(q)d.open=n>0})})}
 document.addEventListener('input',e=>e.target.dataset.q!==undefined&&applyF());
 (function(){const m=$('mj');m.innerHTML=Object.keys(PLANS).map(k=>`<option value="${k}"${k==MAJ?' selected':''}>${PLANS[k].n}</option>`).join('');m.onchange=()=>{try{localStorage.setItem('cheMaj',m.value)}catch(e){}location.reload()};document.title='مخطط التسجيل الذكي – '+PL.n})();$('cap').value=S.cap;$('ovon').checked=S.ovOn;$('ovp').hidden=!S.ovOn;r1();updNote();syncSx();restoreR();go(D.size?2:1,1);try{const th=localStorage.getItem('cheTh');th&&(document.documentElement.dataset.theme=th)}catch(e){}
 
