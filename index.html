@@ -562,6 +562,7 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 <div class="row"><button class="p" id="go">ابنِ الجدول</button><button data-go="1">رجوع</button></div><div id="err"></div></section>
 
 <section data-tb="4"><h2>تصفح الشعب <small id="bc"></small></h2>
+<div class="tabs" id="sxb"><button data-sx="11" aria-pressed="true">شعب الطلاب</button><button data-sx="12" aria-pressed="false">شعب الطالبات</button></div>
 <div class="bsr"><input type="search" class="q" id="bq" placeholder="ابحث بالاسم أو الرمز أو CRN أو المدرس…"><div class="tabs"><button data-bs="p" aria-pressed="true">مواد خطتي المتبقية</button><button data-bs="a" aria-pressed="false">كل المواد</button></div></div>
 <div class="bf">
 <select id="bcl" aria-label="الكلية"><option value="">كل الكليات</option></select><select id="bd" aria-label="اليوم"><option value="">كل الأيام</option><option value="0">الأحد</option><option value="1">الاثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option></select>
@@ -920,7 +921,12 @@ document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
  else if(d.sall){const cap=+S.cap;let used=C.filter(x=>SEL.has(x.n)).reduce((a,x)=>a+x.u,0),skip=0;
   C.filter(c=>c.v==d.sall&&!D.has(c.n)&&!SEL.has(c.n)).forEach(c=>{if(used+c.u<=cap){SEL.add(c.n);used+=c.u}else skip++});
   $('err').innerHTML=skip?note(`تم تخطي ${skip} مادة لتجاوزها الساعات المتاحة.`):'';r3Keep();}
- else if(d.sx){S.sx=d.sx;save();syncSx();if($('fb').dataset.t==4)brRender()}
+ else if(d.sx&&d.sx!=(S.sx||'11')){S.sx=d.sx;save();syncSx();
+  if(R&&R.length){const k=R.length,nr=R.filter(x=>!x.s.sx||x.s.sx==d.sx);
+   if(nr.length<k){const n=k-nr.length;nr.forEach(x=>x.opts=(x.opts||[]).filter(y=>!y.sx||y.sx==d.sx));R=nr;LAST=null;
+    if(R.length)draw();else{R=null;$('out').hidden=true;$('emp').hidden=false;$('tc').textContent='';S.r=[];save()}
+    toast(`أُزيلت ${n==1?'مادة واحدة':n==2?'مادتان':n<11?n+' مواد':n+' مادة'} من جدولك لأن شعبها ليست ضمن ${d.sx=='11'?'شعب الطلاب':'شعب الطالبات'}`,1)}}
+  if($('fb').dataset.t==4)brRender()}
  else if(d.t){mode=d.t;document.querySelectorAll('.tabs [data-t]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t==mode));$('mw').hidden=mode!='m';$('aut').hidden=mode=='m'}
  else if(t.id=='xp'||t.id=='xc')exp(t.id=='xp');
  else if(d.go)go(+d.go);
