@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>مخطط التسجيل الذكي</title><link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#75112a" media="(prefers-color-scheme:light)"><meta name="theme-color" content="#140f11" media="(prefers-color-scheme:dark)">
+<meta name="theme-color" content="#75112a">
 <meta name="description" content="مخطط تسجيل غير رسمي لطلاب جامعة الملك فيصل: جدول أسبوعي بلا تعارض من شعب Banner.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 
 /* ===== 1) الرموز ===== */
 :root{
- color-scheme:light dark;
+ color-scheme:light;
  --f:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",system-ui,sans-serif;
 
  --bg:#f5f1ef;--bg2:#eae1de;--sf:#fff;--sf2:#fbf8f7;
@@ -37,21 +37,9 @@
  --navh:64px;
  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
 }
-/* الوضع الليلي (تلقائي) */
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
- --bg:#131011;--bg2:#1b1619;--sf:#1c1719;--sf2:#241d20;
- --ink:#f4edee;--ink2:#d9cccf;--mu:#a5959a;
- --ln:#342a2d;--ln2:#272022;
- --ac:#f0929f;--acl:#f6aab5;--acf:#ef8d9c;--acfi:#20151a;
- --ac2:#e0b25a;--ps:#2e1c21;--ps2:#3c2329;
- --ok:#4fcf97;--okb:#15302a;--er:#ff9d94;--erb:#3a1e1e;--wr:#e8c06c;--wrb:#342917;
- --h1:#2e0710;--h2:#54101f;--h3:#7a1c33;--hgl:rgba(224,178,90,.18);
- --bl:27%;--evl:31%;--evc:.058;--evb:72%;
- --sh1:0 1px 2px rgba(0,0,0,.4);--sh2:0 2px 6px rgba(0,0,0,.3),0 16px 34px -16px rgba(0,0,0,.6);
- --sh3:0 26px 60px -18px rgba(0,0,0,.75);--shi:0 0 0 1px rgba(255,255,255,.04) inset
-}}
 /* الوضع الليلي (يدوي) */
 :root[data-theme=dark]{
+ color-scheme:dark;
  --bg:#131011;--bg2:#1b1619;--sf:#1c1719;--sf2:#241d20;
  --ink:#f4edee;--ink2:#d9cccf;--mu:#a5959a;
  --ln:#342a2d;--ln2:#272022;
@@ -936,7 +924,7 @@ document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
  else if(d.t){mode=d.t;document.querySelectorAll('.tabs [data-t]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t==mode));$('mw').hidden=mode!='m';$('aut').hidden=mode=='m'}
  else if(t.id=='xp'||t.id=='xc')exp(t.id=='xp');
  else if(d.go)go(+d.go);
- else if(t.id=='th'){const d=document.documentElement,cur=d.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),nx=cur=='dark'?'light':'dark';d.dataset.theme=nx;try{localStorage.setItem('cheTh',nx)}catch(e){}}
+ else if(t.id=='th'){const d=document.documentElement,cur=d.dataset.theme||'light',nx=cur=='dark'?'light':'dark';d.dataset.theme=nx;try{localStorage.setItem('cheTh',nx)}catch(e){}}
  else if(t.id=='pr')window.print();
 
  else if(d.rm!==undefined){LAST={x:R[+d.rm],i:+d.rm};R.splice(+d.rm,1);draw()}
