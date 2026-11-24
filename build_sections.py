@@ -129,6 +129,14 @@ def kfu_data(txt, m, sexes):
         m[sx + ':' + x['crn']] = {'sx': sx, 'num': x['course'], 'crn': x['crn'], 'sec': x['section'], 'st': ST.get(x['status'], 'x'), 'u': int(x['credits']), 't': x['instructor'], 'm': mt}
     return j['meta']['updated']
 
+def recent(ts, mins=90):
+    """هل سُجّل آخر فحص قبل أقل من mins دقيقة؟ (لتجنّب تكرار الكتابة عند تشغيلين متقاربين)"""
+    try:
+        t = datetime.datetime.fromisoformat((ts or '').replace('Z', '+00:00'))
+        return (datetime.datetime.now(datetime.timezone.utc) - t).total_seconds() < mins * 60
+    except Exception:
+        return False
+
 def main():
     a = sys.argv[1:]; out = 'sections.json'; date = None; women = False; files = []; i = 0
     fetch = False; peek = None; term = None; cols = DEFCOLS; sexes = ['11', '12']; scan = False; force = False; only_changed = False
@@ -196,7 +204,7 @@ def main():
     names.update(names_from(secs))
     scope = {'term': term or '', 'cols': cols if fetch else [], 'sexes': sexes if fetch else []}
     changed = old != secs
-    if only_changed and not changed and oldj.get('cols') == scope['cols'] and (oldj.get('checked_at') or '')[:10] == now[:10]:
+    if only_changed and not changed and oldj.get('cols') == scope['cols'] and recent(oldj.get('checked_at')):
         print('لا تغيير في الشعب، لم أعدّل الملف.'); return
     ua = now if changed or not oldj.get('updated_at') else oldj['updated_at']
     with open(out, 'w', encoding='utf-8') as fh:
