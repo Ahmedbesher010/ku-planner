@@ -966,7 +966,8 @@ function secsFor(c,full){const ok=full?['متاحه','ممتلئة']:['متاح�
  const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2))),mine=all.filter(s=>(!s.maj||own(s.maj,PL.m))&&(!s.col||own(s.col,'22'))),good=mine.filter(s=>ok.includes(s.st)&&s.m.length);
  return{all:all.length,mine:mine.length,full:mine.filter(s=>s.st=='ممتلئة').length,good:good.sort((a,b)=>(a.st!='متاحه')-(b.st!='متاحه'))}}
 function solve(cands,secs,cap,ov,auto,need){
- const w=c=>(auto?c.u*(ov.has(c.n)||c.v<=solve.lm?1000+(9-c.v):c.v==solve.lm+1?30:1):c.u*10+1+(ov.has(c.n)?60:0))+.5,rem=[];let t=0;
+ const w=c=>(auto?c.u*(c.g=='E'?50:c.g=='U'?2:ov.has(c.n)||c.v<solve.cl?2000+(9-c.v):c.v==solve.cl?300:c.v==solve.cl+1?10:2):c.u*10+1+(ov.has(c.n)?60:0))+.5,rem=[];let t=0;
+ cands=cands.slice().sort((a,b)=>w(b)-w(a));
  for(let i=cands.length-1;i>=0;i--){t+=w(cands[i]);rem[i]=t}
  const cs=new Set(cands.map(c=>c.n)),ch=[],ex=new Set(),cnt={E:0,U:0};let best=[],bs=-1,nodes=0;
  const coOk=c=>ov.has(c.n)||c.c.every(r=>D.has(r)||(cs.has(r)&&!ex.has(r)));
@@ -991,14 +992,17 @@ async function run0(){
  const ov=new Set(S.ovOn?S.ov:[]),full=(FULL=$('st').value=='1'),auto=mode=='a',msgs=[],need={};
  for(const g in NEED)need[g]=Math.max(0,NEED[g]-C.filter(c=>c.g==g&&D.has(c.n)).length);
  const left=C.filter(c=>!D.has(c.n)&&c.u>0);let pool;
- if(auto){const mv=Math.min(...left.filter(c=>!c.g).map(c=>c.v),9),lm=Math.max(0,...C.filter(c=>!c.g&&D.has(c.n)).map(c=>c.v));solve.lm=lm;
-  pool=left.filter(c=>ov.has(c.n)||((c.g=='U'||(c.g=='E'?mv>=7:c.v<=lm+1))&&c.p.every(r=>D.has(r))))}
+ if(auto){const tu={},ru={};C.forEach(c=>{if(c.g||!c.u)return;tu[c.v]=(tu[c.v]||0)+c.u;if(!D.has(c.n))ru[c.v]=(ru[c.v]||0)+c.u});
+  const lv=Object.keys(tu).map(Number).sort((a,b)=>a-b);let cl=lv.find(v=>(ru[v]||0)*2>tu[v]);
+  if(cl==null)cl=Math.max(0,...lv.filter(v=>ru[v]))||9;solve.cl=cl;
+  pool=left.filter(c=>ov.has(c.n)||((c.g=='U'||(c.g=='E'?cl>=7:c.v<=cl+1))&&c.p.every(r=>D.has(r))))}
  else{pool=left.filter(c=>SEL.has(c.n));pool.filter(c=>!ov.has(c.n)&&!c.p.every(r=>D.has(r))).forEach(c=>msgs.push(note(`${c.a}: لم تنهِ المتطلب (${c.p.filter(r=>!D.has(r)).map(r=>BY[r]?BY[r].a:r).join('، ')}). فعّل التجاوز لها إن كان لديك تجاوز.`,1)));
   pool=pool.filter(c=>ov.has(c.n)||c.p.every(r=>D.has(r)))}
- const secs={},cands=[],notOff=[];
+ const secs={},notOff=[];let cands=[];
  pool.sort((a,b)=>a.v-b.v).forEach(c=>{const r=secsFor(c,full);
   if(r.good.length){secs[c.n]=r.good;cands.push(c)}
-  else if(!auto||c.v<=8&&!c.g){if(!r.all)notOff.push(c);else msgs.push(note(`${c.a} (${c.n}): ${!r.mine?'شعبها مخصصة لتخصصات أخرى':r.full&&!full?`كل شعبها ممتلئة (${r.full}). اختر «المتاحة والممتلئة» لعرضها`:'شعبها غير متاحة للتسجيل'}.`))}});
+  else if(!auto||(!c.g&&c.v<=solve.cl)){if(!r.all)notOff.push(c);else msgs.push(note(`${c.a} (${c.n}): ${!r.mine?'شعبها مخصصة لتخصصات أخرى':r.full&&!full?`كل شعبها ممتلئة (${r.full}). اختر «المتاحة والممتلئة» لعرضها`:'شعبها غير متاحة للتسجيل'}.`))}});
+ if(auto)for(const g in need){const gs=cands.filter(c=>c.g==g).sort((a,b)=>secs[b.n].length-secs[a.n].length).slice(need[g]?need[g]+3:0);if(gs.length){const dr=new Set(gs.map(c=>c.n));cands=cands.filter(c=>!dr.has(c.n))}}
  if(notOff.length)msgs.unshift(note(`لم تُطرح هذا الفصل${META.term?' ('+termTxt(META.term)+')':''}: ${notOff.map(c=>c.a+' ('+c.n+')').join('، ')}. غالباً تُطرح في فصل آخر. للتأكد ابحث عن رمزها في «تصفح الشعب ← كل المواد».`));solve.cut=0;const best=solve(cands,secs,cap,ov,auto,need);
  if(solve.cut)msgs.push(note('كثرة الخيارات: اختُصر البحث وقد لا يكون الجدول هو الأمثل. قلّل عدد المواد أو الشعب.'));
  R=best.sort((a,b)=>a.c.v-b.c.v).map(x=>({c:x.c,s:x.s,opts:secs[x.c.n]}));
@@ -1007,7 +1011,7 @@ async function run0(){
   if(hit.size&&secs[c.n].every(s=>R.some(y=>clash(y.s,s))))return 'تتعارض مع: '+[...hit].join('، ');
   if(R.reduce((a,y)=>a+y.c.u,0)+c.u>cap)return 'تتجاوز الساعات المتاحة';
   return 'تحتاج مادة متزامنة غير مسجلة: '+(c.c.filter(r=>!D.has(r)&&!got.has(r)).map(r=>BY[r]?BY[r].a:r).join('، ')||'غير متاحة في الملفات')};
- cands.filter(c=>!got.has(c.n)&&(!auto||!c.g)).forEach(c=>msgs.push(note(`${c.a} (${c.n}) لم تدخل الجدول: ${why(c)}.`,1)));
+ cands.filter(c=>!got.has(c.n)&&(!auto||(!c.g&&c.v<=solve.cl))).forEach(c=>msgs.push(note(`${c.a} (${c.n}) لم تدخل الجدول: ${why(c)}.`,1)));
  R.forEach(x=>{if(x.c.p.some(r=>!D.has(r))||x.c.c.some(r=>!D.has(r)&&!got.has(r)))msgs.push(note(`${x.c.a}: مسجلة بتجاوز.`))});
  R.msgs=msgs;LAST=null;draw();go(3)}
 
