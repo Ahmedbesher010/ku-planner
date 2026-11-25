@@ -542,38 +542,156 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
  .tt{min-width:0}
 }
 
-/* ===== جولة تعريفية ===== */
-#tour{position:fixed;inset:0;z-index:90;touch-action:none}
+/* ===== جولة تعريفية متحركة ===== */
+#tour{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:12px;
+ padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+ background:rgba(14,6,10,.64);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .25s;touch-action:none}
 #tour[hidden]{display:none}
-.tr-sp{position:fixed;left:50%;top:50%;width:0;height:0;border-radius:16px;pointer-events:none;opacity:0;
- box-shadow:0 0 0 2px rgba(255,255,255,.92),0 0 0 7px color-mix(in srgb,#e3bd68 55%,transparent),0 0 0 200vmax rgba(14,6,10,.66);
- transition:left .4s var(--ez),top .4s var(--ez),width .4s var(--ez),height .4s var(--ez),opacity .25s}
-#tour.on .tr-sp{opacity:1}
-#tour.ctr .tr-sp{box-shadow:0 0 0 200vmax rgba(14,6,10,.66)}
-.tr-cd{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
- width:min(430px,calc(100vw - 24px));background:var(--sf);color:var(--ink);border:1px solid var(--ln);border-radius:22px;
- padding:15px 18px 14px;box-shadow:0 26px 60px -18px rgba(0,0,0,.6);opacity:0;transition:opacity .25s}
-#tour.on .tr-cd{opacity:1}
-#tour.up .tr-cd{bottom:auto;top:calc(14px + env(safe-area-inset-top,0px))}
-#tour.ctr .tr-cd{bottom:auto;top:50%;transform:translate(-50%,-50%)}
-.tr-cd.in{animation:trIn .34s var(--ez)}
+#tour.on{opacity:1}
+.tr-cd{width:min(460px,100%);max-height:100%;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;
+ background:var(--sf);color:var(--ink);border:1px solid var(--ln);border-radius:24px;padding:14px 16px;box-shadow:var(--sh3)}
+.tr-bd.in{animation:trIn .34s var(--ez)}
 @keyframes trIn{from{opacity:0;translate:0 8px}}
-.tr-pg{height:4px;border-radius:4px;background:var(--bg2);overflow:hidden;margin-bottom:11px}
+.tr-pg{height:4px;border-radius:4px;background:var(--bg2);overflow:hidden;margin-bottom:9px}
 .tr-pg i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--ac),#e3bd68);transition:width .4s var(--ez)}
-.tr-hd{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--mu)}
+.tr-hd{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--mu);font-variant-numeric:tabular-nums}
 .tr-x{font:inherit;font-size:13px;color:var(--mu);background:none;border:0;padding:6px 2px;min-height:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;box-shadow:none}
 .tr-x:hover{color:var(--ink);background:none}
-#trt{margin:5px 0 6px;font-size:18.5px;font-weight:800;line-height:1.4;color:var(--ink)}
-.tr-tx{margin:0 0 14px;font-size:14.5px;line-height:1.85;color:var(--ink2)}
+#trt{margin:0 0 3px;font-size:18.5px;font-weight:800;line-height:1.4;color:var(--ink)}
+.tr-tx{margin:0 0 6px;font-size:14.5px;line-height:1.8;color:var(--ink2)}
 .tr-tx b{color:var(--ink)}
-.tr-tx small{display:block;margin-top:6px;color:var(--mu);font-size:12.5px}
-.tr-tx .k{display:inline-block;padding:0 7px;border-radius:7px;background:var(--bg2);color:var(--ink);font-weight:600;font-size:13px}
-.tr-tx .lg{display:grid;gap:1px;margin-top:6px;font-size:13.5px;line-height:1.7}.tr-tx .lg>span{display:block}.tr-tx .lg b{margin-inline-end:6px}
+.tr-tx small{display:block;margin-top:5px;color:var(--mu);font-size:12.5px}
 .tr-tx .t-g{color:#16a34a}.tr-tx .t-y{color:#d97706}.tr-tx .t-r{color:#dc2626}
+.tr-wh{display:flex;align-items:center;gap:7px;margin:0 0 12px;font-size:12.5px;color:var(--mu)}
+.tr-wh:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac2);flex:none}
+.tr-wh[hidden]{display:none}
 .tr-bt{display:flex;gap:8px}
 .tr-bt .tr-nx{flex:2;padding:11px 18px}.tr-bt .tr-pv{flex:1}
 .tr-bt .tr-pv[hidden]{display:none}
-@media (prefers-reduced-motion:reduce){.tr-sp,.tr-cd,.tr-pg i{transition:none!important;animation:none!important}}
+
+/* المسرح والمشاهد المصغّرة */
+.tv{position:relative;height:230px;margin:6px 0 12px;border-radius:18px;background:var(--bg);border:1px solid var(--ln2);overflow:hidden;
+ display:grid;place-items:center;font-size:13px;line-height:1.5;color:var(--ink);-webkit-user-select:none;user-select:none}
+.tv .w{position:relative;width:min(330px,calc(100% - 26px));animation:tvIn .35s var(--ez)}
+.tv.fo .w,.tv.fo .tf{opacity:0;transition:opacity .28s}
+@keyframes tvIn{from{opacity:0;transform:scale(.97)}}
+.tv b,.tv em,.tv i{font-style:normal}
+.tf{position:absolute;left:50%;top:calc(100% + 24px);width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;z-index:9;pointer-events:none;
+ background:rgba(255,255,255,.5);border:2px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.14);
+ transition:left .6s var(--ez),top .6s var(--ez),transform .16s,opacity .3s;opacity:0}
+.tf.v{opacity:1}
+.tf.tp{transform:scale(.76)}
+.tf:after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid #fff;opacity:0}
+.tf.tp:after{animation:tfR .55s ease-out}
+@keyframes tfR{from{opacity:.95;transform:scale(1)}to{opacity:0;transform:scale(2.4)}}
+
+.m-hero{position:relative;border-radius:16px;padding:12px 14px;color:#fff;background:linear-gradient(140deg,var(--h1),var(--h2) 58%,var(--h3));box-shadow:var(--sh2)}
+.m-hero>small{display:block;font-size:12px;font-weight:700;opacity:.92;margin-bottom:8px}
+.m-sel{position:relative;display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-radius:12px;font-weight:700;font-size:14px;
+ background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.28);transition:border-color .2s,background .2s}
+.m-sel.f{border-color:#e3bd68;background:rgba(255,255,255,.2)}
+.m-sel .cv{width:8px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:translateY(-2px) rotate(45deg);opacity:.85}
+.m-sel .v.fl{animation:mFl .5s var(--ez)}
+@keyframes mFl{from{opacity:0;transform:translateX(-8px)}}
+.m-dd{position:absolute;inset-inline:-4px;top:-6px;z-index:3;padding:5px;border-radius:12px;background:var(--sf);color:var(--ink);border:1px solid var(--ln);
+ box-shadow:var(--sh3);font-weight:500;font-size:13px;opacity:0;transform:translateY(-6px);transition:opacity .22s,transform .22s var(--ez);pointer-events:none}
+.m-dd.op{opacity:1;transform:none}
+.m-dd span{display:block;padding:4px 10px;border-radius:8px;transition:background .18s,color .18s}
+.m-dd span.h{background:var(--ps);color:var(--ac);font-weight:700}
+
+.m-lv{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:10px 11px;transition:border-color .3s}
+.m-lv.dn{border-color:color-mix(in srgb,var(--ok) 55%,var(--ln))}
+.m-lh{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;margin-bottom:7px}
+.m-lh>span{display:flex;align-items:center;gap:7px;color:var(--mu);font-size:12px;font-variant-numeric:tabular-nums}
+.m-bar{display:block;width:58px;height:5px;border-radius:5px;background:var(--bg2);overflow:hidden}
+.m-bar i{display:block;height:100%;width:0;border-radius:5px;background:var(--ac);transition:width .4s var(--ez)}
+.m-all{display:inline-block;padding:3px 12px;border-radius:999px;border:1px solid var(--ps2);color:var(--ac);font-size:12px;font-weight:600;transition:background .2s,transform .15s}
+.m-all.pr{background:var(--ps);transform:scale(.96)}
+.m-cr{display:flex;align-items:center;gap:9px;padding:6px 10px;border:1px solid var(--ln);border-radius:10px;margin-top:6px;font-size:12.5px;background:var(--sf)}
+.m-cr small{margin-inline-start:auto;color:var(--mu);font-size:10.5px;font-variant-numeric:tabular-nums}
+.m-cb{width:17px;height:17px;border-radius:5px;border:1.6px solid color-mix(in srgb,var(--mu) 55%,var(--ln));flex:none;display:grid;place-items:center;transition:background .2s,border-color .2s}
+.m-cb.on{background:var(--ac);border-color:var(--ac)}
+.m-cb.on:after{content:'';width:4px;height:8px;border:solid var(--acfi);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+
+.m-lb{font-size:12px;color:var(--mu);margin-bottom:6px}
+.m-in{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.m-num{width:50px;text-align:center;padding:5px 0;border-radius:10px;border:1.5px solid var(--ln);background:var(--sf);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.m-num.fl{animation:mPop .4s var(--sp)}
+@keyframes mPop{40%{transform:scale(1.14)}}
+.m-ch{padding:4px 11px;border-radius:999px;background:var(--sf);border:1px solid var(--ln);font-size:12px;color:var(--ink2);transition:background .2s,color .2s,border-color .2s}
+.m-ch.on{background:var(--acf);border-color:var(--acf);color:var(--acfi)}
+.m-ov{margin-top:14px;padding:9px 11px;border-radius:12px;background:var(--sf);border:1px solid var(--ln)}
+.m-ovh{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600}
+.m-ovh small{margin-inline-start:auto;font-weight:500;color:var(--ok);font-size:11px}
+.m-ovl{max-height:0;overflow:hidden;transition:max-height .45s var(--ez)}
+.m-ovl.op{max-height:60px}
+.m-ovl .m-cr{margin-top:8px}
+
+.m-seg{display:flex;gap:3px;padding:3px;border-radius:12px;background:var(--bg2);margin-bottom:8px}
+.m-seg span{flex:1;text-align:center;padding:5px 0;border-radius:9px;font-size:12.5px;color:var(--mu);transition:background .25s,color .25s,box-shadow .25s}
+.m-seg span.on{background:var(--sf);color:var(--ink);font-weight:700;box-shadow:var(--sh1)}
+.m-go{margin-top:4px;text-align:center;padding:9px;border-radius:12px;background:var(--acf);color:var(--acfi);font-weight:700;font-size:14px;box-shadow:var(--sh2);transition:transform .15s}
+.m-go.ld{animation:mPu .7s ease-in-out infinite}
+@keyframes mPu{50%{opacity:.7;transform:scale(.98)}}
+.m-b1,.m-b2{transition:opacity .3s,transform .3s var(--ez)}
+.m-b2{position:absolute;inset-inline:0;top:50%;transform:translateY(-50%) scale(.97);opacity:0}
+.w.bt .m-b1{opacity:0;transform:scale(.96)}
+.w.bt .m-b2{opacity:1;transform:translateY(-50%)}
+
+.m-gr{position:relative;height:166px}
+.m-gr .hd{position:absolute;top:0;width:20%;text-align:center;font-size:10px;font-weight:600;color:var(--mu);white-space:nowrap}
+.m-gr .c{position:absolute;top:18px;bottom:0;width:calc(20% - 2px);border-radius:8px;background:var(--sf);border:1px solid var(--ln2)}
+.m-ev{position:absolute;width:calc(20% - 6px);border-radius:6px;padding:2px 4px;font-size:10px;font-weight:600;line-height:1.35;overflow:hidden;color:var(--ink);
+ border-inline-start:2.5px solid hsl(var(--h) 55% 42%);background:hsl(var(--h) 60% var(--bl));box-shadow:var(--sh1);
+ transition:right .6s var(--ez),top .6s var(--ez),opacity .3s,transform .45s var(--sp)}
+.m-ev.o{opacity:0;transform:translateY(-12px) scale(.85)}
+.m-ok{position:absolute;bottom:-4px;inset-inline-start:50%;translate:50% 0;padding:4px 12px;border-radius:999px;background:var(--okb);color:var(--ok);
+ border:1px solid color-mix(in srgb,var(--ok) 35%,transparent);font-size:12px;font-weight:700;white-space:nowrap;opacity:0;transform:scale(.8);transition:opacity .3s,transform .4s var(--sp)}
+.m-ok.on{opacity:1;transform:none}
+
+.m-tb{display:flex;margin-bottom:8px}
+.m-tab{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:var(--sf);border:1px solid var(--ln);font-size:12px;font-weight:600}
+.m-bd{display:grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--ac);color:var(--acfi);font-size:11px;font-weight:700}
+.m-bd.fl{animation:mPop .45s var(--sp)}
+.m-cc{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:7px 9px;margin-bottom:7px}
+.m-cc>div:first-child{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;margin-bottom:2px}
+.m-cc>div:first-child small{color:var(--mu);font-size:10.5px}
+.m-sr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 7px;margin-top:4px;border-radius:9px;border:1px solid var(--ln2);font-size:11.5px;transition:background .25s,border-color .25s}
+.m-sr small{display:block;color:var(--mu);font-size:10px;line-height:1.3}
+.m-ad{flex:none;padding:3px 9px;border-radius:999px;background:var(--ps);color:var(--ac);font-size:11px;font-weight:700;transition:background .25s,color .25s}
+.m-sr.in{background:var(--okb);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.m-sr.in .m-ad{background:var(--ok);color:#fff}
+.m-sr.bad{border-color:var(--er);animation:mSh .45s}
+@keyframes mSh{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.m-to{position:absolute;left:50%;bottom:6px;transform:translate(-50%,10px);opacity:0;padding:6px 13px;border-radius:10px;white-space:nowrap;z-index:4;
+ background:var(--erb);color:var(--er);border:1px solid color-mix(in srgb,var(--er) 30%,transparent);font-size:12px;font-weight:700;box-shadow:var(--sh2);transition:opacity .25s,transform .3s var(--ez)}
+.m-to.ok{background:var(--sf);color:var(--ink);border-color:var(--ln)}
+.m-to.on{opacity:1;transform:translate(-50%,0)}
+.m-to.tp{bottom:auto;top:6px}
+.m-to.bt{bottom:44px}
+.m-ar{display:flex;justify-content:center;margin-top:9px}
+.m-alt{padding:5px 14px;border-radius:999px;background:var(--ps);border:1px solid var(--ps2);color:var(--ac);font-size:12.5px;font-weight:700;transition:transform .15s}
+
+.m-pg{border-radius:16px;padding:8px;background:var(--bg);border:1px solid var(--ln);transition:background .45s,border-color .45s}
+.m-pg .m-hero{padding:10px 12px}
+.m-hr{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700}
+.m-mo{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+.m-mo:before{content:'';width:12px;height:12px;border-radius:50%;box-shadow:inset -4px -3px 0 0 #fff;transform:rotate(-20deg)}
+.m-fr{display:inline-flex;align-items:center;gap:7px;margin-top:8px;padding:3px 11px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);font-size:11.5px;color:rgba(255,255,255,.9)}
+.m-fr i{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25);transition:background .3s,box-shadow .3s}
+.m-fr.y i{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+.m-fr.r i{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.25)}
+.m-fr em.fl{animation:mFl .4s var(--ez)}
+.m-ln{height:9px;border-radius:5px;background:var(--sf);border:1px solid var(--ln2);margin-top:7px;transition:background .45s,border-color .45s}
+.m-ln.s{width:62%}
+.m-lgd{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin-top:9px;font-size:11.5px;color:var(--mu)}
+.m-lgd span{white-space:nowrap}.m-lgd b{margin-inline-end:3px}.m-lgd .q1{color:#16a34a}.m-lgd .q2{color:#d97706}.m-lgd .q3{color:#dc2626}
+.m-dk{--bg:#131011;--bg2:#1b1619;--sf:#1c1719;--ink:#f4edee;--mu:#a5959a;--ln:#342a2d;--ln2:#272022;--h1:#2e0710;--h2:#54101f;--h3:#7a1c33}
+.m-lt{--bg:#f5f1ef;--bg2:#eae1de;--sf:#fff;--ink:#1d1719;--mu:#807277;--ln:#e9e0dd;--ln2:#f2ebe8;--h1:#56081b;--h2:#8a132e;--h3:#ab2644}
+.m-pg .m-hero{transition:background .45s}
+
+@media (max-height:700px){.tv{height:205px}.m-gr{height:148px}.tr-tx{font-size:14px;line-height:1.7}}
+@media (prefers-reduced-motion:reduce){#tour,.tr-pg i,.tv *{transition:none!important;animation:none!important}.tf{display:none}}
 </style>
 </head><body><main>
 
@@ -1280,61 +1398,133 @@ hero(C.filter(c=>D.has(c.n)).reduce((a,c)=>a+c.u,0));upd();
 /* ===== جولة تعريفية للزائر الجديد ===== */
 (function(){
 const K='kuTour1',RM=matchMedia('(prefers-reduced-motion: reduce)');
-const q=s=>document.querySelector(s);
+let tok=0;
+const W8=(ms,t)=>new Promise((r,j)=>setTimeout(()=>t===tok?r():j(0),ms));
+const g1=(st,s)=>st.querySelector(s),ga=(st,s)=>[...st.querySelectorAll(s)];
+const re=(e,c)=>{e.classList.remove(c);void e.offsetWidth;e.classList.add(c)};
+async function tap(st,el,t){
+ const f=g1(st,'.tf'),a=st.getBoundingClientRect(),b=el.getBoundingClientRect();
+ f.style.left=(b.left-a.left+b.width/2)+'px';f.style.top=(b.top-a.top+b.height/2)+'px';f.classList.add('v');
+ await W8(600,t);f.classList.add('tp');await W8(170,t);f.classList.remove('tp');await W8(150,t)}
+const hideF=st=>g1(st,'.tf').classList.remove('v');
+
+/* شبكة الأسبوع المصغّرة */
+const DY=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
+const pos=(e,d,t)=>{e.style.right=`calc(${d*20}% + 2px)`;e.style.top=(20+t)+'px'};
+const L1=[{d:0,t:6,h:34,n:'حرارية',hu:350},{d:2,t:6,h:34,n:'حرارية',hu:350},{d:0,t:50,h:34,n:'موائع',hu:200},{d:2,t:50,h:34,n:'موائع',hu:200},
+ {d:1,t:22,h:34,n:'تصميم',hu:130},{d:3,t:22,h:34,n:'تصميم',hu:130},{d:4,t:30,h:62,n:'مختبر',hu:40}];
+const LP=[L1.map(e=>[e.d,e.t]),[[0,50],[2,50],[1,6],[3,6],[0,6],[2,6],[4,66]],[[1,6],[3,6],[0,6],[2,6],[1,50],[3,50],[4,8]]];
+const grid=hid=>`<div class="m-gr">${DY.map((d,i)=>`<span class="hd" style="right:${i*20}%">${d}</span><span class="c" style="right:calc(${i*20}% + 1px)"></span>`).join('')}${
+ L1.map(e=>`<span class="m-ev${hid?' o':''}" style="--h:${e.hu};right:calc(${e.d*20}% + 2px);top:${20+e.t}px;height:${e.h}px">${e.n}</span>`).join('')}</div>`;
+const drop=async(st,t,gap)=>{for(const e of ga(st,'.m-ev')){await W8(gap,t);e.classList.remove('o')}};
+
+const MJ=['الهندسة الكيميائية','الهندسة المدنية','الهندسة الميكانيكية','الهندسة الكهربائية'];let mj=0;
+
 const ST=[
- {t:'أهلاً بك في مخطط التسجيل الذكي',x:'يبني لك جدول ترمك من شعب <b>Banner</b> بلا تعارض، ويراعي خطتك ومتطلباتها. جولة قصيرة تعرّفك بكل شيء في أقل من دقيقة.'},
- {s:'#mj',tab:1,top:1,t:'اختر تخصصك',x:'الكيميائية أو المدنية أو الميكانيكية أو الكهربائية، ولكل تخصص خطته ومستوياته. وما تحدده من مواد يُحفظ لكل تخصص على حدة.'},
- {s:'#fr',tab:1,top:1,t:'حداثة الشعب',x:'يفحص الموقع Banner تلقائياً كل 3 ساعات، و«قبل ساعتين» تعني آخر مرة تحقق فيها. ولون النقطة يخبرك بحداثة البيانات:<span class="lg"><span><b class="t-g">●</b> حديثة</span><span><b class="t-y">●</b> أكثر من يوم ونصف</span><span><b class="t-r">●</b> أكثر من 5 أيام</span></span>'},
- {s:'#th',tab:1,top:1,t:'الوضع الليلي',x:'بدّل بين الوضع الفاتح والليلي متى شئت، ويُحفظ اختيارك.'},
- {s:'#tabs',tab:1,nav:1,t:'أربع مراحل',x:'<b>خطتي</b>: ما أنهيته · <b>البناء</b>: إعداداتك وبناء الجدول تلقائياً · <b>التصفح</b>: اختيار الشعب بنفسك · <b>جدولي</b>: النتيجة، والرقم عليه عدد موادك.'},
- {s:()=>[q('[data-q="lv"]').closest('.tool'),q('#lv details')],tab:1,t:'حدّد ما أنهيته',x:'افتح كل مستوى وعلّم المواد التي اجتزتها، أو اضغط <span class="k">تحديد كل المستوى</span>. ابحث بالاسم أو الرمز، والأرقام أعلى الصفحة تتحدث معك.'},
- {s:()=>[q('#cap').closest('label'),q('.chips[aria-label]')],tab:2,t:'ساعاتك المتاحة',x:'اكتب عدد الساعات المسموح لك بها أو اختر <span class="k">12</span> <span class="k">15</span> <span class="k">18</span> <span class="k">21</span>، ولن يتجاوزها جدولك.'},
- {s:'#ovlb',tab:2,t:'تجاوز متطلب',x:'إن حصلت على تجاوز معتمد فعّل هذا الخيار وحدد المواد، فيسمح البرنامج بتسجيلها قبل إنهاء متطلبها. متاح فقط لمن أنهى <b>99 ساعة</b> فأكثر.'},
- {s:()=>q('[data-t="a"]').closest('.tabs'),tab:2,t:'تلقائي أو يدوي',x:'<b>التلقائي</b> يختار عنك: ما تبقّى من مستوياتك السابقة أولاً، ثم مستواك الحالي، ثم اختياري القسم. <b>اليدوي</b>: تختار المواد بنفسك ويرتب البرنامج شعبها بلا تعارض.'},
- {s:()=>[q('#sxt'),q('#st').closest('.row')],tab:2,t:'طلاب أم طالبات',x:'اختر شعب الطلاب أو الطالبات، وهل تقبل الشعب الممتلئة احتياطاً. ونفس المبدّل موجود في التصفح ومتزامن معه.'},
- {s:'#go',tab:2,t:'ابنِ الجدول',x:'ضغطة واحدة فيبني لك أفضل جدول ممكن، ثم ينقلك إلى «جدولي».'},
- {s:'.bsr',tab:4,t:'تصفح الشعب',x:'ابحث بالاسم أو الرمز أو CRN أو اسم المدرس، وافتح المادة لترى شعبها وأوقاتها ومدرسيها، واضغط على الشعبة لتُضاف لجدولك مباشرة.'},
- {s:'.bf',tab:4,t:'الشعب المتعارضة والمتطلبات',x:'خيار «إخفاء ما يتعارض مع جدولي» يخفي الشعب المتعارضة ويكتب «أُخفيت … شعبة»، اضغط <span class="k">عرضها</span> لتراها. وشارة <span class="k">متطلب ناقص</span> على أي مادة اضغطها لترى ما ينقصك.'},
- {s:()=>$('out').hidden?$('emp'):$('out'),tab:3,t:'جدولي',x:'جدولك بالأوقات وأرقام CRN. غيّر الشعبة أو المدرس من القائمة، واحذف مادة مع إمكانية التراجع، واطلب «توزيعاً آخر» لنفس المواد، وانسخ أرقام CRN أو احفظه صورة أو PDF.'},
- {t:'جاهز!',x:'ابدأ بتحديد المواد التي أنهيتها في «خطتي». ويمكنك إعادة هذه الجولة متى شئت من زر <b>؟</b> أعلى الصفحة.<small>موقع غير رسمي، راجع Banner قبل التسجيل.</small>'}
+{t:'أهلاً بك في مخطط التسجيل الذكي',
+ x:'يبني لك جدول الترم من شعب <b>Banner</b> بلا تعارض، ويراعي خطتك ومتطلباتها. ثماني خطوات قصيرة وتعرف كل شيء.',
+ h:()=>grid(1)+'<span class="m-ok">✓ بلا تعارض</span>',
+ run:async(st,t)=>{await drop(st,t,230);await W8(250,t);g1(st,'.m-ok').classList.add('on');await W8(2600,t)},
+ fin:st=>{ga(st,'.m-ev').forEach(e=>e.classList.remove('o'));g1(st,'.m-ok').classList.add('on')}},
+
+{t:'اختر تخصصك',w:'تجدها أعلى الصفحة',
+ x:'الكيميائية أو المدنية أو الميكانيكية أو الكهربائية. لكل تخصص خطته، وما تحدده من مواد يُحفظ لكل تخصص على حدة.',
+ h:()=>`<div class="m-hero"><small>مخطط التسجيل الذكي</small><div class="m-sel"><span class="v">${MJ[mj]}</span><i class="cv"></i><div class="m-dd">${MJ.map((m,k)=>`<span${k==mj?' class="h"':''}>${m}</span>`).join('')}</div></div></div>`,
+ run:async(st,t)=>{const sel=g1(st,'.m-sel'),dd=g1(st,'.m-dd'),op=ga(st,'.m-dd span'),v=g1(st,'.m-sel .v'),nx=(mj+1)%4;
+  await W8(300,t);await tap(st,sel,t);sel.classList.add('f');dd.classList.add('op');await W8(500,t);
+  await tap(st,op[nx],t);op.forEach((o,k)=>o.classList.toggle('h',k==nx));await W8(260,t);
+  dd.classList.remove('op');sel.classList.remove('f');v.textContent=MJ[nx];re(v,'fl');mj=nx;
+  await W8(300,t);hideF(st);await W8(1700,t)}},
+
+{t:'حدّد ما أنهيته',w:'في تبويب «خطتي»',
+ x:'علّم المواد التي اجتزتها، أو اضغط <b>تحديد كل المستوى</b> لتأشيره دفعة واحدة. بهذا يعرف البرنامج مستواك وما ينقصك.',
+ h:()=>`<div class="m-lv"><div class="m-lh"><b>المستوى 1</b><span><em class="n">0/3</em><i class="m-bar"><i></i></i></span></div><span class="m-all">تحديد كل المستوى</span>${
+  [['تفاضل وتكامل 1','0817-144 · 4س'],['فيزياء عامة 1','0814-140 · 3س'],['كيمياء عامة 1','0815-140 · 3س']].map(r=>`<div class="m-cr"><i class="m-cb"></i>${r[0]}<small>${r[1]}</small></div>`).join('')}</div>`,
+ run:async(st,t)=>{const cb=ga(st,'.m-cb'),n=g1(st,'.n'),bar=g1(st,'.m-bar i'),set=k=>{n.textContent=k+'/3';bar.style.width=(k/3*100)+'%'};
+  await W8(300,t);await tap(st,cb[0],t);cb[0].classList.add('on');set(1);
+  await tap(st,cb[1],t);cb[1].classList.add('on');set(2);await W8(200,t);
+  const al=g1(st,'.m-all');await tap(st,al,t);al.classList.add('pr');cb[2].classList.add('on');set(3);g1(st,'.m-lv').classList.add('dn');
+  await W8(250,t);al.classList.remove('pr');hideF(st);await W8(1900,t)},
+ fin:st=>{ga(st,'.m-cb').forEach(c=>c.classList.add('on'));g1(st,'.n').textContent='3/3';g1(st,'.m-bar i').style.width='100%';g1(st,'.m-lv').classList.add('dn')}},
+
+{t:'ساعاتك وتجاوز المتطلب',w:'في تبويب «البناء»',
+ x:'اكتب ساعاتك المسموحة أو اختر من الأزرار، ولن يتجاوزها جدولك. وإن كان لديك تجاوز معتمد فعّله وحدد مادته، وهو متاح لمن أنهى <b>99 ساعة</b> فأكثر.',
+ h:()=>`<div class="m-lb">الساعات المتاحة</div><div class="m-in"><span class="m-num">15</span>${[12,15,18,21].map(h=>`<span class="m-ch${h==15?' on':''}">${h}</span>`).join('')}</div>
+  <div class="m-ov"><div class="m-ovh"><i class="m-cb"></i>لدي تجاوز متطلب<small>أنهيت 104 ساعات ✓</small></div><div class="m-ovl"><div class="m-cr"><i class="m-cb"></i>تصميم المفاعلات<small>متطلبها: حركية التفاعل</small></div></div></div>`,
+ run:async(st,t)=>{const ch=ga(st,'.m-ch'),num=g1(st,'.m-num');
+  await W8(300,t);await tap(st,ch[2],t);ch.forEach((c,k)=>c.classList.toggle('on',k==2));num.textContent='18';re(num,'fl');await W8(350,t);
+  const c1=g1(st,'.m-ovh .m-cb');await tap(st,c1,t);c1.classList.add('on');g1(st,'.m-ovl').classList.add('op');await W8(450,t);
+  const c2=g1(st,'.m-ovl .m-cb');await tap(st,c2,t);c2.classList.add('on');await W8(250,t);hideF(st);await W8(1900,t)},
+ fin:st=>{ga(st,'.m-ch').forEach((c,k)=>c.classList.toggle('on',k==2));g1(st,'.m-num').textContent='18';ga(st,'.m-ov .m-cb').forEach(c=>c.classList.add('on'));g1(st,'.m-ovl').classList.add('op')}},
+
+{t:'ابنِ جدولك',w:'في تبويب «البناء»',
+ x:'<b>تلقائي</b> يختار المواد عنك: المتأخر أولاً، ثم مستواك، ثم اختياري القسم. و<b>يدوي</b> تختارها أنت ويرتّب هو شعبها. حدّد الطلاب أو الطالبات، ثم ابنِ بضغطة.',
+ h:()=>`<div class="m-b1"><div class="m-seg"><span class="on">تلقائي</span><span>يدوي</span></div><div class="m-seg"><span class="on">طلاب</span><span>طالبات</span></div><div class="m-go">ابنِ جدولي</div></div><div class="m-b2">${grid(1)}</div>`,
+ run:async(st,t)=>{const s1=ga(st,'.m-seg')[0].children,s2=ga(st,'.m-seg')[1].children,go=g1(st,'.m-go'),w=g1(st,'.w');
+  await W8(300,t);await tap(st,s1[1],t);s1[0].classList.remove('on');s1[1].classList.add('on');await W8(300,t);
+  await tap(st,s1[0],t);s1[1].classList.remove('on');s1[0].classList.add('on');await W8(150,t);
+  await tap(st,go,t);go.classList.add('ld');go.textContent='جارٍ البناء…';hideF(st);await W8(750,t);
+  w.classList.add('bt');await W8(250,t);await drop(st,t,170);await W8(2300,t)},
+ fin:st=>{g1(st,'.w').classList.add('bt');ga(st,'.m-ev').forEach(e=>e.classList.remove('o'))}},
+
+{t:'تصفّح الشعب وأضف بنفسك',w:'في تبويب «التصفح»',
+ x:'ابحث بالاسم أو الرمز أو CRN أو المدرس، واضغط <b>إضافة</b> على أي شعبة. وإن تعارضت مع جدولك يرفضها ويخبرك بالمادة المتعارضة.',
+ h:()=>`<div class="m-cc"><div><b>ميكانيكا الموائع</b><small>2203-311</small></div>
+  <div class="m-sr"><span>ش1 · أحد، ثلاثاء 8:00 · د. أحمد</span><span class="m-ad">+ إضافة</span></div>
+  <div class="m-sr"><span>ش2 · اثنين، أربعاء 10:30 · د. فهد</span><span class="m-ad">+ إضافة</span></div></div>
+  <div class="m-cc"><div><b>انتقال الحرارة</b><small>2203-322</small></div>
+  <div class="m-sr"><span>ش1 · أحد، ثلاثاء 8:00 · د. خالد</span><span class="m-ad">+ إضافة</span></div></div>
+  <div class="m-to tp">✕ تتعارض مع «ميكانيكا الموائع»</div>`,
+ run:async(st,t)=>{const sr=ga(st,'.m-sr'),ad=ga(st,'.m-ad');
+  await W8(300,t);await tap(st,ad[0],t);sr[0].classList.add('in');ad[0].textContent='✓ في جدولك';await W8(700,t);
+  await tap(st,ad[2],t);re(sr[2],'bad');g1(st,'.m-to').classList.add('on');await W8(300,t);hideF(st);await W8(2300,t)},
+ fin:st=>{const sr=ga(st,'.m-sr');sr[0].classList.add('in');ga(st,'.m-ad')[0].textContent='✓ في جدولك';sr[2].classList.add('bad');g1(st,'.m-to').classList.add('on')}},
+
+{t:'جدولك وتوزيعاته',w:'في تبويب «جدولي»',
+ x:'<b>اقترح جدولاً آخر</b> يبدّل الشعب لنفس المواد ويدور على كل التوزيعات المتاحة، فترجع لأي توزيع أعجبك. ومنه تنسخ أرقام CRN أو تحفظه صورة أو PDF.',
+ h:()=>`${grid(0)}<div class="m-ar"><span class="m-alt">↻ اقترح جدولاً آخر</span></div><div class="m-to ok bt"></div>`,
+ run:async(st,t)=>{const ev=ga(st,'.m-ev'),to=g1(st,'.m-to'),al=g1(st,'.m-alt');
+  for(let k=1;k<=3;k++){
+   await W8(k==1?300:150,t);await tap(st,al,t);const L=LP[k%3];ev.forEach((e,i)=>pos(e,L[i][0],L[i][1]));
+   to.textContent='توزيع '+(k%3+1)+' من 3'+(k==3?' · رجعنا للبداية':'');to.classList.add('on');
+   await W8(1300,t);to.classList.remove('on')}
+  hideF(st);await W8(900,t)}},
+
+{t:'جاهز!',w:'زرّا ؟ والوضع أعلى الصفحة',
+ x:'شارة «الشعب محدّثة» تخبرك متى فُحصت الشعب آخر مرة، وتُفحص كل 3 ساعات. وزر الوضع للفاتح والليلي، وزر <b>؟</b> يعيد هذه الجولة.<small>موقع غير رسمي، راجع Banner قبل التسجيل.</small>',
+ h:()=>`<div class="m-pg"><div class="m-hero"><div class="m-hr"><span>مخطط التسجيل الذكي</span><i class="m-mo"></i></div><span class="m-fr"><i></i><em>الشعب محدّثة · قبل ساعة</em></span></div><div class="m-ln"></div><div class="m-ln s"></div></div>
+  <div class="m-lgd"><span><b class="q1">●</b>حديثة</span><span><b class="q2">●</b>أكثر من يوم ونصف</span><span><b class="q3">●</b>أكثر من 5 أيام</span></div>`,
+ run:async(st,t)=>{const fr=g1(st,'.m-fr'),em=g1(st,'.m-fr em'),pg=g1(st,'.m-pg'),mo=g1(st,'.m-mo');
+  const ph=[['','الشعب محدّثة · قبل ساعة'],['y','الشعب محدّثة · قبل يومين'],['r','قد تكون الشعب قديمة · قبل 6 أيام'],['','الشعب محدّثة · قبل ساعة']];
+  for(const [c,s] of ph){fr.classList.remove('y','r');c&&fr.classList.add(c);em.textContent=s;re(em,'fl');await W8(1150,t)}
+  const dk=document.documentElement.dataset.theme=='dark'?'m-lt':'m-dk';
+  await tap(st,mo,t);pg.classList.add(dk);await W8(1200,t);await tap(st,mo,t);pg.classList.remove(dk);await W8(300,t);hideF(st);await W8(1000,t)}}
 ];
+
 const W=document.createElement('div');W.id='tour';W.hidden=true;
-W.innerHTML='<div class="tr-sp"></div><div class="tr-cd" role="dialog" aria-modal="true" aria-labelledby="trt" aria-describedby="trx"><div class="tr-pg"><i></i></div><div class="tr-hd"><span class="tr-n"></span><button type="button" class="tr-x">تخطَّ الجولة</button></div><h3 id="trt"></h3><p class="tr-tx" id="trx"></p><div class="tr-bt"><button type="button" class="p tr-nx">التالي</button><button type="button" class="tr-pv">السابق</button></div></div>';
+W.innerHTML='<div class="tr-cd" role="dialog" aria-modal="true" aria-labelledby="trt" aria-describedby="trx"><div class="tr-pg"><i></i></div><div class="tr-hd"><span class="tr-n"></span><button type="button" class="tr-x">تخطَّ الجولة</button></div><div class="tr-bd"><div class="tv" aria-hidden="true"></div><h3 id="trt"></h3><p class="tr-tx" id="trx"></p><p class="tr-wh"></p></div><div class="tr-bt"><button type="button" class="p tr-nx">التالي</button><button type="button" class="tr-pv">السابق</button></div></div>';
 document.body.appendChild(W);
-const sp=W.querySelector('.tr-sp'),cd=W.querySelector('.tr-cd'),nx=W.querySelector('.tr-nx'),pv=W.querySelector('.tr-pv');
-let i=0,on=false,back=1;
-function els(s){if(!s)return null;let e;try{e=typeof s=='function'?s():q(s)}catch(_){e=null}
- e=[].concat(e).filter(x=>x&&x.getClientRects().length);return e.length?e:null}
-function box(es){let t=1e9,l=1e9,b=-1e9,r=-1e9;es.forEach(e=>{const k=e.getBoundingClientRect();t=Math.min(t,k.top);l=Math.min(l,k.left);b=Math.max(b,k.bottom);r=Math.max(r,k.right)});return{t,l,b,r}}
-function jump(y){const h=document.documentElement,o=h.style.scrollBehavior;h.style.scrollBehavior='auto';scrollTo(0,Math.max(0,y));h.style.scrollBehavior=o}
-function oy(e){let y=0;for(;e;e=e.offsetParent)y+=e.offsetTop;return y}
-function place(){
- const s=ST[i],es=els(s.s);W.classList.toggle('ctr',!es);
- if(!es){W.classList.remove('up');sp.style.cssText='';return}
- const k=box(es),P=7,vh=innerHeight,vw=innerWidth,ch=cd.offsetHeight+28;
- const below=vh-k.b,up=below<ch&&k.t>ch;W.classList.toggle('up',up);
- const top=Math.max(4,k.t-P),bot=Math.min(k.b+P,up?vh-4:vh-ch),lim=up?Math.max(top+40,ch):0;
- const t2=Math.max(top,lim),l=Math.max(4,k.l-P),r=Math.min(vw-4,k.r+P);
- Object.assign(sp.style,{left:l+'px',top:t2+'px',width:Math.max(0,r-l)+'px',height:Math.max(36,bot-t2)+'px'})}
+const cd=W.querySelector('.tr-cd'),bd=W.querySelector('.tr-bd'),tv=W.querySelector('.tv'),wh=W.querySelector('.tr-wh'),nx=W.querySelector('.tr-nx'),pv=W.querySelector('.tr-pv');
+let i=0,on=false,ov='';
+async function play(s,t){
+ try{for(;;){
+  tv.classList.remove('fo');tv.innerHTML='<div class="w">'+s.h()+'</div><i class="tf"></i>';
+  if(RM.matches){s.fin&&s.fin(tv);return}
+  await W8(320,t);await s.run(tv,t);tv.classList.add('fo');await W8(300,t)}}catch(_){}}
 function show(n){
- i=Math.max(0,Math.min(ST.length-1,n));const s=ST[i];
- if(s.tab&&$('fb').dataset.t!=s.tab)go(s.tab,1);
- const es=els(s.s);
- if(es){if(s.top)jump(0);
-  else if(s.nav){const f=[...document.querySelectorAll('section[data-tb]:not(.off)')].find(e=>e.offsetParent);jump(f?oy(f)-$('tabs').offsetHeight-10:0)}
-  else{const k=box(es);jump(scrollY+k.t-$('tabs').offsetHeight-22)}}
- $('trt').textContent=s.t;$('trx').innerHTML=s.x;
+ i=Math.max(0,Math.min(ST.length-1,n));const s=ST[i];const t=++tok;
+ $('trt').textContent=s.t;$('trx').innerHTML=s.x;wh.textContent=s.w||'';wh.hidden=!s.w;
  W.querySelector('.tr-n').textContent=(i+1)+' / '+ST.length;
  W.querySelector('.tr-pg i').style.width=((i+1)/ST.length*100)+'%';
  pv.hidden=i==0;nx.textContent=i==0?'ابدأ الجولة':i==ST.length-1?'ابدأ الآن':'التالي';
  W.querySelector('.tr-x').hidden=i==ST.length-1;
- cd.classList.remove('in');void cd.offsetWidth;cd.classList.add('in');
- requestAnimationFrame(()=>requestAnimationFrame(place))}
-function start(){if(on)return;back=+($('fb').dataset.t||1);on=true;W.hidden=false;
+ re(bd,'in');cd.scrollTop=0;play(s,t)}
+function start(){if(on)return;on=true;W.hidden=false;ov=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';
  requestAnimationFrame(()=>W.classList.add('on'));show(0);nx.focus({preventScroll:true})}
-function end(){if(!on)return;on=false;try{localStorage.setItem(K,'1')}catch(_){}
- W.classList.remove('on');setTimeout(()=>{if(!on)W.hidden=true},RM.matches?0:260);
- go(i==ST.length-1?1:back);const h=$('hlp');h&&h.focus({preventScroll:true})}
+function end(){if(!on)return;on=false;tok++;try{localStorage.setItem(K,'1')}catch(_){}
+ W.classList.remove('on');document.documentElement.style.overflow=ov;
+ setTimeout(()=>{if(!on){W.hidden=true;tv.innerHTML=''}},RM.matches?0:260);
+ const h=$('hlp');h&&h.focus({preventScroll:true})}
 nx.onclick=()=>i==ST.length-1?end():show(i+1);
 pv.onclick=()=>show(i-1);
 W.querySelector('.tr-x').onclick=end;
@@ -1344,8 +1534,6 @@ document.addEventListener('keydown',e=>{if(!on)return;
  else if(e.key=='ArrowRight'&&i>0){e.preventDefault();show(i-1)}
  else if(e.key=='Tab'){const f=[...cd.querySelectorAll('button:not([hidden])')],a=f.indexOf(document.activeElement);
   if(a<0||(!e.shiftKey&&a==f.length-1)||(e.shiftKey&&a==0)){e.preventDefault();(e.shiftKey?f[f.length-1]:f[0]).focus()}}});
-addEventListener('resize',()=>on&&place());
-addEventListener('scroll',()=>on&&place(),{passive:true});
 $('hlp').addEventListener('click',start);
 let seen=true;try{seen=!!localStorage.getItem(K)}catch(_){}
 if(!seen)setTimeout(start,900);
