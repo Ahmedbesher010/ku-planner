@@ -371,6 +371,14 @@ details.ani .g label:nth-child(n+5){animation-delay:.12s}
  animation:tileIn .5s var(--sp) both}
 .st div:nth-child(2){animation-delay:.07s}.st div:nth-child(3){animation-delay:.14s}
 .st b{display:block;font-size:27px;font-weight:700;line-height:1.2;color:var(--ac);font-variant-numeric:tabular-nums}
+.sl{display:flex;flex-wrap:wrap;gap:6px 0;margin:-6px 0 14px;font-size:12.5px;color:var(--mu);line-height:1.5}
+.sl i{font-style:normal}
+.sl i+i:before{content:'·';margin:0 8px;opacity:.5}
+.sl b{color:var(--tx);font-weight:600;font-variant-numeric:tabular-nums}
+.shr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;padding:12px 14px;border-radius:var(--r2);
+ background:linear-gradient(160deg,var(--ps),var(--sf2));border:1px solid var(--ac);font-size:13.5px}
+.shr b{display:block;font-size:14.5px;margin-bottom:2px}
+.shr span{flex:1 1 160px;color:var(--mu);line-height:1.6}
 .sc{overflow-x:auto;margin:0 -4px;padding:0 4px}
 table{border-collapse:separate;border-spacing:0;width:100%;min-width:660px;font-size:14px}
 th,td{padding:10px 10px;text-align:right;vertical-align:top;border-bottom:1px solid var(--ln)}
@@ -536,7 +544,7 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 @media print{
  :root{--bg:#fff;--bg2:#fff;--sf:#fff;--ink:#000;--mu:#444;--ln:#bbb;--ps:#f4f4f4;--bl:92%;--evl:94%}
  body{background:#fff}
- section:not(#out),.hero,.nav,#fb,#toast,footer,#emp,.row,select,.ft-tg{display:none!important}
+ section:not(#out),.hero,.nav,#fb,#toast,footer,#emp,.row,.shr,select,.ft-tg{display:none!important}
  section{border:0;box-shadow:none;padding:0;animation:none}
  .sc table{min-width:0}
  .tt{min-width:0}
@@ -922,7 +930,7 @@ ee:{n:'الهندسة الكهربائية',m:'2202',t:136,raw:`0814-140|فيز�
 const MAJ=(()=>{try{const v=localStorage.getItem('cheMaj');return PLANS[v]?v:'che'}catch(e){return'che'}})(),PL=PLANS[MAJ],SK=MAJ=='che'?'chePlan':'chePlan_'+MAJ,RAW=PL.raw+'\n'+UNIV;
 const C=RAW.split('\n').map(l=>{const[n,a,u,v,p,c,g]=l.split('|');return{n,a,u:+u,v:+v,p:p?p.split(','):[],c:c?c.split(','):[],g:g||''}});
 const BY=Object.fromEntries(C.map(c=>[c.n,c])),ALT={'0622-292':'0673-293'},NEED={E:3,U:2};
-const LN={9:'اختياري قسم (3 مواد)',10:'اختياري جامعة (مادتان)'},DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
+const LN={0:'خارج خطتك',9:'اختياري قسم (3 مواد)',10:'اختياري جامعة (مادتان)'},DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
 const $=id=>document.getElementById(id),lvn=v=>LN[v]||'المستوى '+v;
 let S={done:[],cap:'',ov:[],ovOn:false,sx:'11'},mode='a',SEL=new Set(),IDX={},R=null,FULL=false,DONEU=0;
 try{Object.assign(S,JSON.parse(localStorage.getItem(SK)||'{}'))}catch(e){}
@@ -978,7 +986,7 @@ function updNote(){const f=$('fr'),ref=META.checked_at||META.updated_at||(UPD&&U
 function syncSx(){document.querySelectorAll('[data-sx]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sx==(S.sx||'11')))}
 try{localStorage.removeItem('cheSecs')}catch(e){}
 const fail=()=>{if(!SECS.length)$('upd').textContent='تعذر تحميل بيانات الشعب.'};
-fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){SECS=j.secs;UPD=j.updated||'';META={updated_at:j.updated_at||(!j.updated&&lm?new Date(lm).toISOString():''),checked_at:j.checked_at||'',term:j.term||''};NMX=j.names||{};updNote();restoreR();if($('fb').dataset.t==4)brRender(1)}else fail()}).catch(fail);
+fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){SECS=j.secs;UPD=j.updated||'';META={updated_at:j.updated_at||(!j.updated&&lm?new Date(lm).toISOString():''),checked_at:j.checked_at||'',term:j.term||''};NMX=j.names||{};updNote();boot();if($('fb').dataset.t==4)brRender(1)}else fail()}).catch(fail);
 setInterval(()=>SECS.length&&updNote(),6e4);
 function r3Keep(){const o=[...document.querySelectorAll('#man details')].map(x=>x.open);r3();document.querySelectorAll('#man details').forEach((x,i)=>x.open=o[i]);}
 document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
@@ -1005,12 +1013,22 @@ document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
  else if(t.id=='ab'){const c=BY[$('ac').value],g=secsFor(c,FULL).good,q=g.find(z=>z.crn==$('as').value),u=R.reduce((a,y)=>a+y.c.u,0);
   if(u+c.u>+S.cap){$('am').innerHTML=note(`لا يمكن الإضافة: ${u+c.u} ساعة تتجاوز المتاح (${S.cap}).`,1);return}
   LAST=null;R.push({c,s:q,opts:g});R.sort((a,b)=>a.c.v-b.c.v);draw()}
- else if(t.id=='cp'){const s=R.map(x=>x.s.crn).join(' ');navigator.clipboard&&navigator.clipboard.writeText(s).then(()=>t.textContent='تم النسخ',()=>{})}});
+ else if(t.id=='cp'){const s=R.map(x=>x.s.crn).join(' ');navigator.clipboard&&navigator.clipboard.writeText(s).then(()=>t.textContent='تم النسخ',()=>{})}
+ else if(t.id=='alt'){const f=reshuffle();
+  if(!f){toast('لا توجد توزيعات أخرى لهذه المواد بنفس الشعب المتاحة',1);return}
+  const n=f.filter((s,i)=>s.crn!=R[i].s.crn).length;SEEN.add(ssig(f));R.forEach((x,i)=>x.s=f[i]);LAST=null;draw();
+  toast('توزيع آخر: تغيّرت '+plS(n,'شعبة واحدة','شعبتان','شعب'))}
+ else if(t.id=='sh'){const u=shURL();
+  if(navigator.share)navigator.share({title:'جدولي · مخطط التسجيل الذكي',url:u}).catch(()=>{});
+  else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>{t.textContent='تم نسخ الرابط';setTimeout(()=>{t.textContent='مشاركة الجدول'},2500)},()=>{});
+  else prompt('انسخ الرابط وأرسله',u)}
+ else if(t.id=='shu'||t.id=='shx'){if(SH)shEnd(t.id=='shu')}});
 $('go').onclick=run;
-function png(){const ms=R.flatMap(y=>y.s.m),t0=Math.floor(Math.min(...ms.map(m=>m.s))/60),t1=Math.ceil(Math.max(...ms.map(m=>m.e))/60),P=60,T=70,Lw=60,W=1100,cw=(W-Lw)/5,H=T+(t1-t0)*P+20,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+function png(){const ms=R.flatMap(y=>y.s.m),t0=Math.floor(Math.min(...ms.map(m=>m.s))/60),t1=Math.ceil(Math.max(...ms.map(m=>m.e))/60),P=60,T=92,Lw=60,W=1100,cw=(W-Lw)/5,H=T+(t1-t0)*P+20,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
  const F='"IBM Plex Sans Arabic",Tahoma,Arial',rr=(X,Y,w,h,r)=>{x.beginPath();x.roundRect?x.roundRect(X,Y,w,h,r):x.rect(X,Y,w,h);x.fill()};
  x.fillStyle='#fffdfc';x.fillRect(0,0,W,H);x.direction='rtl';x.textAlign='center';x.fillStyle='#1d1719';x.font='bold 21px '+F;x.fillText('جدول التسجيل: '+R.length+' مواد، '+R.reduce((a,y)=>a+y.c.u,0)+' ساعة',W/2,30);
  x.fillStyle='#b08440';x.fillRect(W/2-34,38,68,3);
+ x.fillStyle='#807277';x.font='13px '+F;x.fillText(sumTxt().join(' · '),W/2,64);
  x.font='600 13px '+F;x.strokeStyle='#e9e0dd';
  DN.forEach((n,d)=>{x.fillStyle='#f6f2f0';rr(W-Lw-(d+1)*cw+3,T-26,cw-6,22,8);x.fillStyle='#1d1719';x.fillText(n,W-Lw-(d+.5)*cw,T-10)});
  x.font='12px '+F;
@@ -1086,6 +1104,64 @@ async function run0(){
  R.forEach(x=>{if(x.c.p.some(r=>!D.has(r))||x.c.c.some(r=>!D.has(r)&&!got.has(r)))msgs.push(note(`${x.c.a}: مسجلة بتجاوز.`))});
  R.msgs=msgs;LAST=null;draw();go(3)}
 
+/* ملخص الجدول */
+const plS=(n,o,t,m)=>n==1?o:n==2?t:n+' '+m;
+const dur=m=>{const h=m/60|0,q=m%60,H=h==1?'ساعة':h==2?'ساعتان':h<=10?h+' ساعات':h+' ساعة',Q=q==1?'دقيقة':q==2?'دقيقتان':q+' دقيقة';return h&&q?H+' و'+Q:h?H:Q};
+function sstat(){const ms=R.flatMap(x=>x.s.m);if(!ms.length)return null;
+ const byd={};ms.forEach(m=>(byd[m.d]=byd[m.d]||[]).push(m));let gap=0,gd=-1;
+ for(const d in byd){const a=byd[d].slice().sort((x,y)=>x.s-y.s);for(let i=1;i<a.length;i++){const g=a[i].s-a[i-1].e;if(g>gap){gap=g;gd=+d}}}
+ const free=DN.filter((n,d)=>!byd[d]);
+ return{first:Math.min(...ms.map(m=>m.s)),last:Math.max(...ms.map(m=>m.e)),free,gap,gd}}
+function sumTxt(){const s=sstat();if(!s)return[];
+ const o=['أول محاضرة '+hm(s.first),'آخر محاضرة '+hm(s.last)];
+ if(s.free.length==1)o.push(s.free[0]+' فارغ');else if(s.free.length==2)o.push(s.free[0]+' و'+s.free[1]+' فارغان');else if(s.free.length)o.push(s.free.length+' أيام فارغة');
+ o.push(s.gap>=30?'أطول فراغ '+dur(s.gap)+' ('+DN[s.gd]+')':'بلا فراغات طويلة');
+ return o}
+function sumLine(){const t=sumTxt();return t.length?'<div class="sl">'+t.map(x=>'<i>'+x.replace(/(\d{1,2}:\d{2})/,'<b>$1</b>')+'</i>').join('')+'</div>':''}
+/* توزيع آخر لنفس المواد */
+let SEEN=new Set(),SKEY='';
+const ssig=a=>a.map(s=>s.crn).sort().join(',');
+function reshuffle(){
+ const k=R.map(x=>x.c.n).sort().join('|');if(k!=SKEY){SKEY=k;SEEN=new Set()}
+ SEEN.add(ssig(R.map(x=>x.s)));
+ const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a.sort((x,y)=>(x.st!='متاحه')-(y.st!='متاحه'))};
+ const ord=R.map((x,i)=>i).sort((a,b)=>R[a].opts.length-R[b].opts.length),pick=[];let nodes=0,found=null;
+ (function dfs(i){
+  if(found||++nodes>2e5)return;
+  if(i==ord.length){if(!SEEN.has(ssig(pick)))found=pick.slice();return}
+  const ix=ord[i];
+  for(const s of sh(R[ix].opts)){
+   let ok=true;for(let j=0;j<i;j++)if(clash(pick[ord[j]],s)){ok=false;break}
+   if(!ok)continue;pick[ix]=s;dfs(i+1);if(found)return}
+ })(0);
+ return found}
+/* مشاركة الجدول برابط */
+let SH=null;
+const shURL=()=>location.origin+location.pathname+'#j='+(S.sx||'11')+','+MAJ+','+R.map(x=>x.s.crn).join('.');
+const shParse=()=>{const m=/[#&]j=(\d{2}),([a-z]+),([\d.]+)/.exec(location.hash);return m?{sx:m[1],maj:m[2],crns:m[3].split('.').filter(Boolean)}:null};
+const shClear=()=>{try{history.replaceState(null,'',location.pathname+location.search)}catch(e){location.hash=''}};
+const shPrev=()=>{try{return localStorage.getItem('kuShPrev')||''}catch(e){return''}};
+const shDrop=()=>{try{localStorage.removeItem('kuShPrev')}catch(e){}};
+function shOpen(q){
+ if(PLANS[q.maj]&&q.maj!=MAJ){let w=false;
+  try{localStorage.setItem('kuShPrev',MAJ);localStorage.setItem('cheMaj',q.maj);w=localStorage.getItem('cheMaj')==q.maj}catch(e){}
+  if(w){location.reload();return true}}
+ const out=[];let miss=0;
+ for(const crn of q.crns){const s=SECS.find(x=>x.crn==crn&&x.m&&x.m.length);if(!s){miss++;continue}
+  const c=BY[s.num]||{n:s.num,a:cname(s.num)||s.num,u:s.u,v:0,p:[],c:[],g:''},opts=SECS.filter(x=>x.num==s.num&&(x.sx||'')==(s.sx||'')&&x.m.length);
+  out.push({c,s,opts:opts.length?opts:[s]})}
+ if(!out.length){shClear();toast('تعذّر فتح الجدول المشارَك، لم تعد شعبه مطروحة',1);return false}
+ SH={miss,sx:out[0].s.sx||'11'};const pv=shPrev();if(pv&&PLANS[pv]&&pv!=MAJ)SH.prev=pv;
+ R=out.sort((a,b)=>a.c.v-b.c.v);draw();go(3);return true}
+function boot(){const q=shParse();if(q&&SECS.length){if(shOpen(q))return}restoreR()}
+addEventListener('hashchange',()=>{const q=shParse();if(q&&SECS.length)shOpen(q)});
+function shEnd(use){
+ const prev=SH.prev;shDrop();
+ if(use){const sx=SH.sx;SH=null;if(sx!=(S.sx||'11')){S.sx=sx;syncSx()}shClear();draw();toast('صار هذا جدولك المحفوظ'+(prev?' · وتخصصك الآن '+PL.n:''))}
+ else{SH=null;R=null;shClear();
+  if(prev){try{localStorage.setItem('cheMaj',prev)}catch(e){}location.reload();return}
+  restoreR();if(!R){$('out').hidden=true;$('emp').hidden=false;$('tc').textContent=''}toast('تم تجاهل الجدول المشارَك')}}
+
 function draw(){
  const o=$('out');o.hidden=false;$('emp').hidden=true;$('tc').textContent=R.length||'';setTimeout(upd,0);const msgs=R.msgs||[];
  if(!R.length){o.innerHTML='<h2>النتيجة</h2>'+note('لم أستطع تسجيل أي مادة.',1)+msgs.join('')+'<div class="row"><button class="p" data-go="4">تصفح الشعب وأضف مادة</button></div>';return}
@@ -1094,12 +1170,14 @@ function draw(){
  const t0=Math.floor(mn/60),t1=Math.ceil(mx/60),P=48,H=(t1-t0)*P;
  const hrs=Array.from({length:t1-t0+1},(_,i)=>i+t0);
  const inR=new Set(R.map(x=>x.c.n)),cand=C.filter(c=>!D.has(c.n)&&!inR.has(c.n)&&secsFor(c,FULL).good.length);
- o.innerHTML=`<h2>جدولك <small>${upS()}</small></h2><div class="st"><div><b>${R.length}</b>مواد</div><div><b>${units}</b>ساعة</div><div><b>${new Set(R.flatMap(x=>x.s.m.map(m=>m.d))).size}</b>أيام دراسة</div></div>${LAST?note(`حُذفت «${LAST.x.c.a}». <button id="un">تراجع</button>`):''}${msgs.join('')}
+ const nfull=R.filter(x=>x.s.st&&x.s.st!='متاحه').length;
+ const shb=SH?`<div class="shr"><span><b>جدول مشارَك معك</b>${SH.prev?'عُرض بتخصص '+PL.n+' · ':''}${SH.miss?plS(SH.miss,'شعبة لم تعد مطروحة','شعبتان لم تعودا مطروحتين','شعب لم تعد مطروحة')+' · ':''}${nfull?plS(nfull,'شعبة ممتلئة الآن','شعبتان ممتلئتان الآن','شعب ممتلئة الآن')+' · ':''}جدولك المحفوظ لم يتغيّر</span><button class="p" id="shu">استخدمه كجدولي</button><button id="shx">تجاهله</button></div>`:'';
+ o.innerHTML=`<h2>جدولك <small>${upS()}</small></h2>${shb}<div class="st"><div><b>${R.length}</b>مواد</div><div><b>${units}</b>ساعة</div><div><b>${new Set(R.flatMap(x=>x.s.m.map(m=>m.d))).size}</b>أيام دراسة</div></div>${sumLine()}${LAST?note(`حُذفت «${LAST.x.c.a}». <button id="un">تراجع</button>`):''}${msgs.join('')}
  <div class="sc"><table><tr><th>المادة</th><th>المستوى</th><th>CRN</th><th>الشعبة</th><th>المدرس</th><th>الوقت</th><th>س</th></tr>${R.map((x,i)=>{
   const ts=new Set(x.alts.map(s=>s.t||'—')),pick=x.alts.length>1?`<br><select data-alt="${i}" aria-label="تغيير الشعبة">${x.alts.map(s=>`<option value="${s.crn}"${s.crn==x.s.crn?' selected':''}>${s.t||'مدرس غير محدد'} | شعبة ${s.sec}${s.st!='متاحه'?' (ممتلئة)':''}</option>`).join('')}</select>${ts.size>1?' <small>اختر المدرس المفضل</small>':''}`:'';
   return `<tr><td><b><i class="dt" style="--h:${i*47%360}"></i>${x.c.a}</b><br><small>${x.c.n}</small><br><button class="gh" data-rm="${i}">حذف</button></td><td><span class="lb">${lvn(x.c.v)}</span></td><td>${x.s.crn}</td><td>${x.s.sec}</td><td>${x.s.t||'غير محدد'}${pick}</td><td>${x.s.m.map(m=>DN[m.d]+' '+hm(m.s)+'-'+hm(m.e)).join('<br>')}</td><td>${x.c.u}</td></tr>`}).join('')}</table></div>
- <div class="row"><button id="cp">نسخ أرقام CRN</button><button id="xp">حفظ كصورة PNG</button><button id="xc">حفظ كملف CSV</button><button id="pr">طباعة / PDF</button><span id="xm"></span></div>
- <div class="row"><button class="p" data-go="4">+ إضافة مادة من تصفح الشعب</button></div>
+ <div class="row"><button id="sh">مشاركة الجدول</button><button id="cp">نسخ أرقام CRN</button><button id="xp">حفظ كصورة PNG</button><button id="xc">حفظ كملف CSV</button><button id="pr">طباعة / PDF</button><span id="xm"></span></div>
+ <div class="row">${R.length>1&&R.some(x=>x.opts.length>1)?'<button id="alt">↻ اقترح جدولاً آخر</button>':''}<button class="p" data-go="4">+ إضافة مادة من تصفح الشعب</button></div>
  <div class="sc" style="margin-top:8px"><div class="tt"><div class="hr"><h4 style="height:28px"></h4><div style="position:relative;height:${H}px">${hrs.map(h=>`<span style="top:${(h-t0)*P-8}px">${h}:00</span>`).join('')}</div></div>
  ${DN.map((n,d)=>`<div class="col"><h4>${n}${R.some(x=>x.s.m.some(m=>m.d==d))?'':' <small>· فارغ</small>'}</h4><div style="position:relative;height:${H}px">${hrs.map(h=>`<div class="hl" style="top:${(h-t0)*P}px"></div>`).join('')}${R.flatMap((x,i)=>x.s.m.filter(m=>m.d==d).map(m=>`<div class="ev" style="--h:${i*47%360};top:${(m.s-t0*60)*P/60}px;height:${(m.e-m.s)*P/60-2}px"><b>${x.c.a}</b><br>${hm(m.s)}-${hm(m.e)}</div>`)).join('')}</div></div>`).join('')}</div></div>`}
 let LAST=null;
@@ -1141,7 +1219,7 @@ document.addEventListener('change',e=>{const t=e.target,crn=t.dataset&&t.dataset
  if(t.checked){const r=brAdd(s);if(r.err)toast('تعذّرت الإضافة: '+r.err,1);else toast(`${r.swap?'تم تبديل شعبة':'تمت إضافة'} «${r.c.a}» · شعبة ${s.sec}${r.pre?' · تنبيه: لم تنهِ '+r.c.p.filter(x=>!D.has(x)).map(x=>BY[x]?BY[x].a:cname(x)||x).join('، '):''}`,0,1)}
  else{const i=R?R.findIndex(x=>x.s.crn==crn):-1;if(i>=0){const c=R[i].c;R.splice(i,1);LAST=null;draw();toast(`تم حذف «${c.a}» من جدولك`)}}
  brRender(1)});
-const dr0=draw;draw=function(){dr0();S.r=R?R.map(x=>x.s.crn):[];save()};
+const dr0=draw;draw=function(){dr0();if(SH)return;S.r=R?R.map(x=>x.s.crn):[];save()};
 function restoreR(){if(R||!SECS.length||!(S.r&&S.r.length))return;const sx=S.sx||'11',out=[];let miss=0;
  for(const crn of S.r){const s=SECS.find(x=>x.crn==crn&&(!x.sx||x.sx==sx));if(!s){miss++;continue}
   const c=BY[s.num]||{n:s.num,a:cname(s.num)||s.num,u:s.u,v:0,p:[],c:[],g:''},g=bg().find(x=>x.n==c.n),opts=(g?g.secs:[s]).filter(x=>x.m.length&&(!BY[c.n]||okMaj(x)));if(!opts.includes(s))opts.push(s);out.push({c,s,opts})}
@@ -1158,7 +1236,7 @@ function applyF(){document.querySelectorAll('[data-q]').forEach(i=>{const q=i.va
   const e=$(i.dataset.q+'-e');if(e)e.hidden=n>0;return}
  ds.forEach(d=>{let n=0;d.querySelectorAll('.g label').forEach(l=>{const h=!q||l.textContent.includes(q);l.classList.toggle('off',!h);h&&n++});d.classList.toggle('off',!!q&&!n);if(q)d.open=n>0})})}
 document.addEventListener('input',e=>e.target.dataset.q!==undefined&&applyF());
-(function(){const m=$('mj');m.innerHTML=Object.keys(PLANS).map(k=>`<option value="${k}"${k==MAJ?' selected':''}>${PLANS[k].n}</option>`).join('');m.onchange=()=>{try{localStorage.setItem('cheMaj',m.value)}catch(e){}location.reload()};document.title='مخطط التسجيل الذكي – '+PL.n})();$('cap').value=S.cap;$('ovon').checked=S.ovOn;$('ovp').hidden=!S.ovOn;r1();updNote();syncSx();restoreR();go(D.size?2:1,1);try{const th=localStorage.getItem('cheTh');th&&(document.documentElement.dataset.theme=th)}catch(e){}
+(function(){const m=$('mj');m.innerHTML=Object.keys(PLANS).map(k=>`<option value="${k}"${k==MAJ?' selected':''}>${PLANS[k].n}</option>`).join('');m.onchange=()=>{try{localStorage.setItem('cheMaj',m.value)}catch(e){}location.reload()};document.title='مخطط التسجيل الذكي – '+PL.n})();$('cap').value=S.cap;$('ovon').checked=S.ovOn;$('ovp').hidden=!S.ovOn;r1();updNote();syncSx();boot();go(D.size?2:1,1);try{const th=localStorage.getItem('cheTh');th&&(document.documentElement.dataset.theme=th)}catch(e){}
 
 /* ===== حركة البطاقات + نافذة المتطلب الناقص ===== */
 (function(){
@@ -1270,7 +1348,7 @@ const ST=[
  {s:'#go',tab:2,t:'ابنِ الجدول',x:'ضغطة واحدة فيبني لك أفضل جدول ممكن، ثم ينقلك إلى «جدولي».'},
  {s:'.bsr',tab:4,t:'تصفح الشعب',x:'ابحث بالاسم أو الرمز أو CRN أو اسم المدرس، وافتح المادة لترى شعبها وأوقاتها ومدرسيها، واضغط على الشعبة لتُضاف لجدولك مباشرة.'},
  {s:'.bf',tab:4,t:'الشعب المتعارضة والمتطلبات',x:'خيار «إخفاء ما يتعارض مع جدولي» يخفي الشعب المتعارضة ويكتب «أُخفيت … شعبة»، اضغط <span class="k">عرضها</span> لتراها. وشارة <span class="k">متطلب ناقص</span> على أي مادة اضغطها لترى ما ينقصك.'},
- {s:()=>$('out').hidden?$('emp'):$('out'),tab:3,t:'جدولي',x:'جدولك بالأوقات وأرقام CRN. غيّر الشعبة أو المدرس من القائمة، واحذف مادة مع إمكانية التراجع، وانسخ أرقام CRN أو احفظه صورة أو PDF.'},
+ {s:()=>$('out').hidden?$('emp'):$('out'),tab:3,t:'جدولي',x:'جدولك بالأوقات وأرقام CRN. غيّر الشعبة أو المدرس من القائمة، واحذف مادة مع إمكانية التراجع، واطلب «توزيعاً آخر» لنفس المواد، وانسخ أرقام CRN أو احفظه صورة أو PDF أو شاركه برابط.'},
  {t:'جاهز!',x:'ابدأ بتحديد المواد التي أنهيتها في «خطتي». ويمكنك إعادة هذه الجولة متى شئت من زر <b>؟</b> أعلى الصفحة.<small>موقع غير رسمي، راجع Banner قبل التسجيل.</small>'}
 ];
 const W=document.createElement('div');W.id='tour';W.hidden=true;
@@ -1323,7 +1401,7 @@ addEventListener('resize',()=>on&&place());
 addEventListener('scroll',()=>on&&place(),{passive:true});
 $('hlp').addEventListener('click',start);
 let seen=true;try{seen=!!localStorage.getItem(K)}catch(_){}
-if(!seen)setTimeout(start,900);
+if(!seen&&!/[#&]j=/.test(location.hash))setTimeout(start,900);
 window.kuTour=start;
 })();
 </script></main></body></html>
