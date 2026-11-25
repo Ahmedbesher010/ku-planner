@@ -1093,17 +1093,18 @@ async function run0(){
 
 /* توزيعات أخرى لنفس المواد: تُحسب مرة وتدور */
 let AL=null;
+/* خيارات المادة في التوزيع: الشعب المتاحة فقط، والشعبة الممتلئة التي اخترتها تبقى ثابتة */
+const aop=x=>x.s.st!='متاحه'?[x.s]:[x.s].concat(x.opts.filter(o=>o.crn!=x.s.crn&&o.st=='متاحه'&&o.m.length));
 const ssig=a=>a.map(s=>s.crn).join(',');
 function altList(){
  const cur=R.map(x=>x.s),sig=ssig(cur),key=R.map(x=>x.c.n).join('|');
  if(AL&&AL.key==key&&ssig(AL.list[AL.i])==sig)return AL;
- const ord=R.map((x,i)=>i).sort((a,b)=>R[a].opts.length-R[b].opts.length),pick=[],out=[];let nodes=0,more=false;
+ const AO=R.map(aop),ord=R.map((x,i)=>i).sort((a,b)=>AO[a].length-AO[b].length),pick=[],out=[];let nodes=0,more=false;
  (function dfs(i){
   if(more)return;if(++nodes>2e5){more=true;return}
   if(i==ord.length){if(ssig(pick)!=sig){if(out.length>=500){more=true;return}out.push(pick.slice())}return}
   const ix=ord[i];
-  const os=[cur[ix]].concat(R[ix].opts.filter(o=>o!==cur[ix]));
-  for(const s of os){let ok=true;for(let j=0;j<i;j++)if(clash(pick[ord[j]],s)){ok=false;break}
+  for(const s of AO[ix]){let ok=true;for(let j=0;j<i;j++)if(clash(pick[ord[j]],s)){ok=false;break}
    if(!ok)continue;pick[ix]=s;dfs(i+1);if(more)return}
  })(0);
  for(let k=out.length-1;k>0;k--){const r=Math.random()*(k+1)|0;[out[k],out[r]]=[out[r],out[k]]}
@@ -1123,7 +1124,7 @@ function draw(){
   const ts=new Set(x.alts.map(s=>s.t||'—')),pick=x.alts.length>1?`<br><select data-alt="${i}" aria-label="تغيير الشعبة">${x.alts.map(s=>`<option value="${s.crn}"${s.crn==x.s.crn?' selected':''}>${s.t||'مدرس غير محدد'} | شعبة ${s.sec}${s.st!='متاحه'?' (ممتلئة)':''}</option>`).join('')}</select>${ts.size>1?' <small>اختر المدرس المفضل</small>':''}`:'';
   return `<tr><td><b><i class="dt" style="--h:${i*47%360}"></i>${x.c.a}</b><br><small>${x.c.n}</small><br><button class="gh" data-rm="${i}">حذف</button></td><td><span class="lb">${lvn(x.c.v)}</span></td><td>${x.s.crn}</td><td>${x.s.sec}</td><td>${x.s.t||'غير محدد'}${pick}</td><td>${x.s.m.map(m=>DN[m.d]+' '+hm(m.s)+'-'+hm(m.e)).join('<br>')}</td><td>${x.c.u}</td></tr>`}).join('')}</table></div>
  <div class="row"><button id="cp">نسخ أرقام CRN</button><button id="xp">حفظ كصورة PNG</button><button id="xc">حفظ كملف CSV</button><button id="pr">طباعة / PDF</button><span id="xm"></span></div>
- <div class="row">${R.length>1&&R.some(x=>x.opts.length>1)?'<button id="alt">↻ اقترح جدولاً آخر</button>':''}<button class="p" data-go="4">+ إضافة مادة من تصفح الشعب</button></div>
+ <div class="row">${R.length>1&&R.some(x=>aop(x).length>1)?'<button id="alt">↻ اقترح جدولاً آخر</button>':''}<button class="p" data-go="4">+ إضافة مادة من تصفح الشعب</button></div>
  <div class="sc" style="margin-top:8px"><div class="tt"><div class="hr"><h4 style="height:28px"></h4><div style="position:relative;height:${H}px">${hrs.map(h=>`<span style="top:${(h-t0)*P-8}px">${h}:00</span>`).join('')}</div></div>
  ${DN.map((n,d)=>`<div class="col"><h4>${n}${R.some(x=>x.s.m.some(m=>m.d==d))?'':' <small>· فارغ</small>'}</h4><div style="position:relative;height:${H}px">${hrs.map(h=>`<div class="hl" style="top:${(h-t0)*P}px"></div>`).join('')}${R.flatMap((x,i)=>x.s.m.filter(m=>m.d==d).map(m=>`<div class="ev" style="--h:${i*47%360};top:${(m.s-t0*60)*P/60}px;height:${(m.e-m.s)*P/60-2}px"><b>${x.c.a}</b><br>${hm(m.s)}-${hm(m.e)}</div>`)).join('')}</div></div>`).join('')}</div></div>`}
 let LAST=null;
