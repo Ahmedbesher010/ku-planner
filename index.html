@@ -1006,10 +1006,10 @@ document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
   if(u+c.u>+S.cap){$('am').innerHTML=note(`لا يمكن الإضافة: ${u+c.u} ساعة تتجاوز المتاح (${S.cap}).`,1);return}
   LAST=null;R.push({c,s:q,opts:g});R.sort((a,b)=>a.c.v-b.c.v);draw()}
  else if(t.id=='cp'){const s=R.map(x=>x.s.crn).join(' ');navigator.clipboard&&navigator.clipboard.writeText(s).then(()=>t.textContent='تم النسخ',()=>{})}
- else if(t.id=='alt'){const f=reshuffle();
-  if(!f){toast('لا توجد توزيعات أخرى لهذه المواد بنفس الشعب المتاحة',1);return}
-  const n=f.filter((s,i)=>s.crn!=R[i].s.crn).length;SEEN.add(ssig(f));R.forEach((x,i)=>x.s=f[i]);LAST=null;draw();
-  toast('توزيع آخر: تغيّرت '+(n==1?'شعبة واحدة':n==2?'شعبتان':n+' شعب'))}
+ else if(t.id=='alt'){const A=altList(),N=A.list.length;
+  if(N<2){toast(A.more?'تعذّر إيجاد توزيع آخر، جرّب حذف مادة أو إعادة البناء':'لا توجد توزيعات أخرى لهذه المواد',1);return}
+  A.i=(A.i+1)%N;const f=A.list[A.i];R.forEach((x,k)=>x.s=f[k]);LAST=null;draw();
+  toast('توزيع '+(A.i+1)+' من '+(A.more?'أكثر من '+(N-1):N)+(A.i==0?' · رجعنا للبداية':''))}
 });
 $('go').onclick=run;
 function png(){const ms=R.flatMap(y=>y.s.m),t0=Math.floor(Math.min(...ms.map(m=>m.s))/60),t1=Math.ceil(Math.max(...ms.map(m=>m.e))/60),P=60,T=70,Lw=60,W=1100,cw=(W-Lw)/5,H=T+(t1-t0)*P+20,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
@@ -1091,23 +1091,24 @@ async function run0(){
  R.forEach(x=>{if(x.c.p.some(r=>!D.has(r))||x.c.c.some(r=>!D.has(r)&&!got.has(r)))msgs.push(note(`${x.c.a}: مسجلة بتجاوز.`))});
  R.msgs=msgs;LAST=null;draw();go(3)}
 
-/* توزيع آخر لنفس المواد */
-let SEEN=new Set(),SKEY='';
-const ssig=a=>a.map(s=>s.crn).sort().join(',');
-function reshuffle(){
- const k=R.map(x=>x.c.n).sort().join('|');if(k!=SKEY){SKEY=k;SEEN=new Set()}
- SEEN.add(ssig(R.map(x=>x.s)));
- const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a.sort((x,y)=>(x.st!='متاحه')-(y.st!='متاحه'))};
- const ord=R.map((x,i)=>i).sort((a,b)=>R[a].opts.length-R[b].opts.length),pick=[];let nodes=0,found=null;
+/* توزيعات أخرى لنفس المواد: تُحسب مرة وتدور */
+let AL=null;
+const ssig=a=>a.map(s=>s.crn).join(',');
+function altList(){
+ const cur=R.map(x=>x.s),sig=ssig(cur),key=R.map(x=>x.c.n).join('|');
+ if(AL&&AL.key==key&&ssig(AL.list[AL.i])==sig)return AL;
+ const ord=R.map((x,i)=>i).sort((a,b)=>R[a].opts.length-R[b].opts.length),pick=[],out=[];let nodes=0,more=false;
  (function dfs(i){
-  if(found||++nodes>2e5)return;
-  if(i==ord.length){if(!SEEN.has(ssig(pick)))found=pick.slice();return}
+  if(more)return;if(++nodes>2e5){more=true;return}
+  if(i==ord.length){if(ssig(pick)!=sig){if(out.length>=500){more=true;return}out.push(pick.slice())}return}
   const ix=ord[i];
-  for(const s of sh(R[ix].opts)){
-   let ok=true;for(let j=0;j<i;j++)if(clash(pick[ord[j]],s)){ok=false;break}
-   if(!ok)continue;pick[ix]=s;dfs(i+1);if(found)return}
+  const os=[cur[ix]].concat(R[ix].opts.filter(o=>o!==cur[ix]));
+  for(const s of os){let ok=true;for(let j=0;j<i;j++)if(clash(pick[ord[j]],s)){ok=false;break}
+   if(!ok)continue;pick[ix]=s;dfs(i+1);if(more)return}
  })(0);
- return found}
+ for(let k=out.length-1;k>0;k--){const r=Math.random()*(k+1)|0;[out[k],out[r]]=[out[r],out[k]]}
+ const nf=a=>a.filter(s=>s.st!='متاحه').length;out.sort((a,b)=>nf(a)-nf(b));
+ AL={key,list:[cur].concat(out),i:0,more};return AL}
 
 function draw(){
  const o=$('out');o.hidden=false;$('emp').hidden=true;$('tc').textContent=R.length||'';setTimeout(upd,0);const msgs=R.msgs||[];
