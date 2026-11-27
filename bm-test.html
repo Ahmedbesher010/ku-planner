@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>تجربة سحب الشعب من جهازك</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f5f1ef;--sf:#fff;--ink:#1d1719;--mu:#7a6c71;--ln:#e9e0dd;--ac:#8d1430;--ps:#f8e9ec;--ok:#15803d;--okb:#e8f6ec;--er:#b42318;--erb:#fdecea;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#131011;--sf:#1c1719;--ink:#f4edee;--mu:#a5959a;--ln:#342a2d;--ac:#f08aa0;--ps:#3a1c24;--ok:#4ade80;--okb:#13281b;--er:#f87171;--erb:#2e1515;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.8 system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+main{max-width:680px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--mu);margin:0 0 20px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:16px 18px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 6px;display:flex;gap:10px;align-items:center}
+.card h2 i{font-style:normal;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--ps);color:var(--ac);font-size:14px}
+.card p{margin:4px 0}
+.bm{display:inline-block;margin:8px 0 4px;padding:10px 20px;border-radius:12px;background:var(--ac);color:#fff;font-weight:700;text-decoration:none;cursor:grab;box-shadow:0 4px 14px rgba(141,20,48,.25)}
+@media (prefers-color-scheme:dark){.bm{color:#1d1719}}
+kbd{font:12px ui-monospace,monospace;padding:1px 6px;border:1px solid var(--ln);border-radius:6px;background:var(--bg)}
+a{color:var(--ac)}
+.small{font-size:13px;color:var(--mu)}
+button{font:inherit;font-size:14px;padding:7px 14px;border-radius:10px;border:1px solid var(--ln);background:var(--sf);color:var(--ac);cursor:pointer}
+textarea{width:100%;min-height:90px;font:12px/1.5 ui-monospace,monospace;direction:ltr;border:1px solid var(--ln);border-radius:10px;padding:8px;background:var(--bg);color:var(--ink)}
+#recv{border:2px solid var(--ok)}
+#recv[hidden]{display:none}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+td,th{padding:5px 8px;border-bottom:1px solid var(--ln);text-align:start}
+.ok{color:var(--ok);font-weight:700}.er{color:var(--er);font-weight:700}
+details summary{cursor:pointer;color:var(--mu);font-size:13px}
+</style>
+</head>
+<body><main>
+<h1>تجربة: سحب الشعب من جهازك</h1>
+<p class="sub">صفحة اختبار مؤقتة لمخطط التسجيل الذكي. تتحقق هل يستطيع متصفح الطالب جلب جداول الشعب من Banner بنفسه، بلا سيرفر. لا يُثبَّت شيء، ولا يُرسَل شيء إلا إلى هذه الصفحة. تعمل على الحاسوب.</p>
+
+<section class="card" id="recv" hidden>
+ <h2><i>✓</i>النتيجة</h2>
+ <div id="rbody"></div>
+ <p class="small">انسخ النص التالي وأرسله:</p>
+ <textarea id="rtxt" readonly></textarea>
+ <p><button id="rcopy" type="button">نسخ النتيجة</button></p>
+</section>
+
+<section class="card">
+ <h2><i>1</i>اسحب هذا الزر إلى شريط المفضلة</h2>
+ <a class="bm" id="bm" href="#" title="اسحبه إلى شريط المفضلة">اختبار Banner</a>
+ <p class="small">إن لم يظهر شريط المفضلة اضغط <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (أو <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> في ماك). الضغط على الزر هنا لا يفعل شيئاً، يجب تشغيله من صفحة Banner.</p>
+ <details><summary>لا يمكنني السحب؟ أنشئ الإشارة يدوياً</summary>
+  <p class="small">أنشئ إشارة مرجعية جديدة بأي اسم، والصق هذا النص في خانة الرابط (URL):</p>
+  <textarea id="bmcode" readonly></textarea>
+  <p><button id="bmcopy" type="button">نسخ الكود</button></p>
+ </details>
+</section>
+
+<section class="card">
+ <h2><i>2</i>افتح صفحة جدول الشعب في Banner</h2>
+ <p><a id="blink" href="#" target="_blank" rel="opener">جدول شعب كلية الهندسة (طلاب)</a></p>
+ <p class="small" id="bterm"></p>
+</section>
+
+<section class="card">
+ <h2><i>3</i>في صفحة Banner اضغط الإشارة «اختبار Banner»</h2>
+ <p>ستظهر نافذة صغيرة فوق صفحة Banner تجلب أربع صفحات وتعرض عدد الشعب. اضغط فيها «أرسل النتيجة»، فتنفتح هذه الصفحة وتظهر النتيجة في أعلاها. إن لم تنفتح، اضغط «نسخ النتيجة» في النافذة نفسها.</p>
+</section>
+
+<script type="text/plain" id="bmsrc">
+(async()=>{
+const W=__W__,T0=__T__,OK=/(^|\.)kfu\.edu\.sa$/.test(location.hostname)||location.hostname=='127.0.0.1';
+const old=document.getElementById('kubm');if(old)old.remove();
+const box=document.createElement('div');box.id='kubm';box.dir='rtl';
+box.style.cssText='position:fixed;top:16px;left:16px;z-index:2147483647;width:min(420px,calc(100vw - 32px));max-height:80vh;overflow:auto;background:#fff;color:#1d1719;border:2px solid #8d1430;border-radius:14px;padding:14px 16px;font:14px/1.7 Tahoma,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:right';
+box.innerHTML='<b style="font-size:16px">اختبار سحب الشعب</b><div id="kubml" style="margin:8px 0"></div><div id="kubmb"></div>';
+document.body.appendChild(box);
+const L=document.getElementById('kubml'),log=(t,c)=>{const d=document.createElement('div');d.textContent=t;if(c)d.style.color=c;L.appendChild(d)};
+if(!OK){log('افتح صفحة جدول الشعب في Banner أولاً، ثم اضغط الزر هناك.','#b42318');return}
+const res={v:1,host:location.hostname,path:location.pathname,term:new URLSearchParams(location.search).get('p_trm_code')||T0,pages:[],t:new Date().toISOString()};
+log('الفصل: '+res.term);
+const sc=document.createElement('script');let ld;
+const lp=new Promise(r=>{ld=r;sc.onload=()=>r(window.__kuBMok?'يعمل':'تحمّل ولم يعمل');sc.onerror=()=>r('ممنوع');setTimeout(()=>r('مهلة'),6000)});
+try{sc.src=W+'bm.js?'+Date.now();document.head.appendChild(sc)}catch(e){ld('خطأ: '+e)}
+const dec=b=>{try{return new TextDecoder('utf-8',{fatal:true}).decode(b)}catch(e){return new TextDecoder('windows-1256').decode(b)}};
+for(const [c,s] of [['22','11'],['22','12'],['08','11'],['00','11']]){
+ const t0=performance.now(),u=location.origin+'/PROD_ar/ws?p_trm_code='+res.term+'&p_col_code='+c+'&p_sex_code='+s;
+ try{
+  const r=await fetch(u,{cache:'no-store'}),h=dec(await r.arrayBuffer()),d=new DOMParser().parseFromString(h,'text/html');
+  let n=0,ex=null;
+  d.querySelectorAll('tr').forEach(tr=>{const td=[...tr.children].filter(x=>x.tagName=='TD').map(x=>x.textContent.replace(/\s+/g,' ').trim());if(td.length==13&&/^\d+$/.test(td[1])){n++;if(!ex)ex=td.slice(0,9).join(' | ')}});
+  const p={c,s,st:r.status,kb:Math.round(h.length/1024),n,ms:Math.round(performance.now()-t0),ex};res.pages.push(p);
+  log('كلية '+c+(s=='12'?' طالبات':' طلاب')+': '+n+' شعبة · '+p.kb+'KB · '+p.ms+'ms',n?'#15803d':'#b42318');
+ }catch(e){res.pages.push({c,s,err:String(e).slice(0,120)});log('كلية '+c+': خطأ '+String(e).slice(0,80),'#b42318')}
+}
+res.loader=await lp;log('تحميل ملف خارجي: '+res.loader);
+const tot=res.pages.reduce((a,p)=>a+(p.n||0),0);log('المجموع: '+tot+' شعبة',tot?'#15803d':'#b42318');
+const txt=JSON.stringify(res);
+const B=document.getElementById('kubmb');
+B.innerHTML='<button id="kubms" style="font:inherit;padding:7px 14px;border-radius:10px;border:0;background:#8d1430;color:#fff;cursor:pointer">أرسل النتيجة</button> <button id="kubmc" style="font:inherit;padding:7px 14px;border-radius:10px;border:1px solid #ccc;background:#fff;color:#8d1430;cursor:pointer">نسخ النتيجة</button> <button id="kubmx" style="font:inherit;padding:7px 10px;border:0;background:none;color:#777;cursor:pointer">إغلاق</button><div id="kubmm" style="margin-top:6px;font-size:13px"></div>';
+const M=t=>document.getElementById('kubmm').textContent=t;
+document.getElementById('kubmx').onclick=()=>box.remove();
+document.getElementById('kubmc').onclick=()=>{navigator.clipboard.writeText(txt).then(()=>M('نُسخت. الصقها لمن طلبها.'),()=>{prompt('انسخ النتيجة:',txt)})};
+document.getElementById('kubms').onclick=()=>{
+ const o=new URL(W).origin,w=window.open(W+'bm-test.html#recv','kubm_recv');
+ if(!w){M('المتصفح منع فتح نافذة جديدة. استخدم «نسخ النتيجة».');return}
+ let done=false,n=0;res.opener='?';
+ const on=e=>{if(e.origin!==o||!e.data)return;if(e.data.kubmReady&&!done){res.opener='يعمل';w.postMessage({kubm:res},o)}if(e.data.kubmAck){done=true;M('وصلت النتيجة إلى صفحة الاختبار ✓');removeEventListener('message',on)}};
+ addEventListener('message',on);
+ const iv=setInterval(()=>{if(done||++n>30){clearInterval(iv);if(!done)M('لم تؤكد صفحة الاختبار الاستلام. استخدم «نسخ النتيجة».');return}try{w.postMessage({kubm:res},o)}catch(e){}},600);
+};
+})();
+</script>
+
+<script>
+(function(){
+const base=location.href.replace(/[#?].*$/,'').replace(/[^/]*$/,'');
+let term='144820';
+const src=document.getElementById('bmsrc').textContent.trim();
+function build(){
+ const code=src.replace('__W__',JSON.stringify(base)).replace('__T__',JSON.stringify(term));
+ const href='javascript:'+encodeURIComponent(code);
+ document.getElementById('bm').href=href;document.getElementById('bmcode').value=href;
+ const u='https://ssb-ar.kfu.edu.sa/PROD_ar/ws?p_trm_code='+term+'&p_col_code=22&p_sex_code=11';
+ document.getElementById('blink').href=u;
+ document.getElementById('bterm').textContent='رمز الفصل المستخدم: '+term+' (من آخر بيانات الموقع)';
+}
+build();
+fetch('sections.json?'+Date.now()).then(r=>r.json()).then(j=>{if(j&&/^\d{6}$/.test(j.term||'')){term=j.term;build()}}).catch(()=>{});
+document.getElementById('bm').addEventListener('click',e=>{e.preventDefault();alert('اسحب الزر إلى شريط المفضلة، ثم شغّله من صفحة Banner.')});
+document.getElementById('bmcopy').onclick=()=>navigator.clipboard.writeText(document.getElementById('bmcode').value);
+document.getElementById('rcopy').onclick=()=>navigator.clipboard.writeText(document.getElementById('rtxt').value);
+
+/* الاستقبال من صفحة Banner */
+const okOrigin=o=>{try{const h=new URL(o).hostname;return /(^|\.)kfu\.edu\.sa$/.test(h)||(h=='127.0.0.1'&&location.hostname=='127.0.0.1')}catch(e){return false}};
+function show(r,how){
+ const rv=document.getElementById('recv');rv.hidden=false;
+ const tot=(r.pages||[]).reduce((a,p)=>a+(p.n||0),0);
+ document.getElementById('rbody').innerHTML='<p>الفصل <b>'+r.term+'</b> · المجموع <b class="'+(tot?'ok':'er')+'">'+tot+' شعبة</b> · ملف خارجي: <b>'+r.loader+'</b> · الاتصال بين الصفحتين: <b class="ok">'+how+'</b></p><table><tr><th>الكلية</th><th>الحالة</th><th>الشعب</th><th>الحجم</th><th>الزمن</th></tr>'+
+  (r.pages||[]).map(p=>'<tr><td>'+p.c+(p.s=='12'?' طالبات':' طلاب')+'</td><td>'+(p.err?'<span class="er">'+p.err+'</span>':p.st)+'</td><td class="'+(p.n?'ok':'er')+'">'+(p.n||0)+'</td><td>'+(p.kb||'-')+'KB</td><td>'+(p.ms||'-')+'ms</td></tr>').join('')+'</table>';
+ document.getElementById('rtxt').value=JSON.stringify({...r,via:how,ua:navigator.userAgent});
+ rv.scrollIntoView({behavior:'smooth'});
+}
+addEventListener('message',e=>{if(!okOrigin(e.origin)||!e.data||!e.data.kubm)return;
+ try{e.source.postMessage({kubmAck:1},e.origin)}catch(_){}
+ show(e.data.kubm,'يعمل')});
+if(location.hash=='#recv'){
+ if(window.opener){try{window.opener.postMessage({kubmReady:1},'*')}catch(e){}}
+ else{const rv=document.getElementById('recv');rv.hidden=false;document.getElementById('rbody').innerHTML='<p class="er">فُتحت الصفحة لكن الاتصال بصفحة Banner مقطوع (لا يوجد opener). استخدم «نسخ النتيجة» في نافذة Banner.</p>'}
+}
+})();
+</script>
+</main></body></html>
