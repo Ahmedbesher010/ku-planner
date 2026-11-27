@@ -208,7 +208,7 @@ button.p:hover::after{transform:translateX(110%)}
 .chips button:hover,.ex button:hover{color:var(--ac);background:var(--ps)}
 .ex{display:flex;gap:7px;flex:none}
 
-input[type=number],input[type=search],select{font:inherit;color:var(--ink);background:var(--sf);
+input[type=number],input[type=search],input[type=text],select{font:inherit;color:var(--ink);background:var(--sf);
  border:1px solid var(--ln);border-radius:var(--r3);padding:9px 12px;min-height:42px;max-width:100%;
  transition:border-color .2s,box-shadow .2s,background .2s}
 input[type=number]{width:92px;font-variant-numeric:tabular-nums;font-weight:600}
@@ -542,6 +542,75 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
  .tt{min-width:0}
 }
 
+/* ===== تعديل الخطة ===== */
+.pe-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:-2px 0 14px}
+.pe-bar>button{min-height:38px;padding:6px 15px;font-size:14px;border-radius:999px}
+.pe-s{font-size:12.5px;color:var(--mu)}
+.pe-s b{color:var(--ac);font-weight:700}
+.pe-on{flex:1 1 100%;padding:12px 14px;border-radius:var(--r2);border:1.5px dashed color-mix(in srgb,var(--ac) 45%,var(--ln));background:var(--ps)}
+.pe-on p{margin:0 0 10px;font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.pe-on p b{color:var(--ink);margin-inline-end:4px}
+.pe-on .row{display:flex;flex-wrap:wrap;gap:8px}
+.pe-on .row button{min-height:38px;padding:6px 15px;font-size:14px}
+.pe-on .row .p{padding:6px 20px;margin-inline-start:auto}
+.pe-on .row .cf{border-color:var(--er);color:var(--er)}
+.g .per{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:10px 13px;border:1px dashed color-mix(in srgb,var(--ac) 35%,var(--ln));
+ border-radius:var(--r2);background:var(--sf);color:var(--ink);font-weight:400;line-height:1.5;min-height:0}
+.g .per:hover{background:var(--sf2);border-style:solid}
+.g .per>span{flex:1;min-width:0}
+.g .per small{display:block;font-size:12px;color:var(--mu)}
+.g .per .pe-i{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ps);color:var(--ac);font-style:normal;font-size:14px}
+.g .per.off,.g label.off{display:none}
+.pe-t{display:inline-block;margin-inline-start:6px;padding:0 7px;border-radius:999px;font-size:10.5px;font-weight:700;font-style:normal;line-height:1.7;vertical-align:2px;
+ background:color-mix(in srgb,#e3bd68 22%,var(--sf));color:color-mix(in srgb,#8a6414 85%,var(--ink));border:1px solid color-mix(in srgb,#e3bd68 55%,transparent)}
+:root[data-theme=dark] .pe-t{color:#f0d391}
+
+#pem{position:fixed;inset:0;z-index:85;display:grid;place-items:center;padding:12px;background:rgba(14,6,10,.55);opacity:0;transition:opacity .2s}
+#pem[hidden]{display:none}
+#pem.on{opacity:1}
+.pm-cd{width:min(520px,100%);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;background:var(--sf);color:var(--ink);
+ border:1px solid var(--ln);border-radius:22px;padding:16px;box-shadow:var(--sh3);transform:translateY(8px);transition:transform .25s var(--ez)}
+#pem.on .pm-cd{transform:none}
+.pm-h{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.pm-h>div{flex:1;min-width:0}
+.pm-h b{display:block;font-size:17px;line-height:1.45}
+.pm-h small{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}
+.pm-x{flex:none;width:36px;height:36px;min-height:0;padding:0;border-radius:11px;font-size:20px;line-height:1;color:var(--mu)}
+.pm-n{margin:0 0 12px;padding:9px 12px;border-radius:12px;background:var(--bg2);font-size:13px;line-height:1.7;color:var(--ink2)}
+.pm-n button{min-height:0;padding:0;border:0;background:none;color:var(--ac);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.pm-s{margin-bottom:12px}
+.pm-s h4{margin:0 0 7px;font-size:14px}
+.pm-s h4 small{font-weight:400;color:var(--mu);font-size:12px;margin-inline-start:5px}
+.pm-cs{display:flex;flex-wrap:wrap;gap:6px}
+.pm-c{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 4px;padding-inline-start:11px;border-radius:999px;background:var(--ps);border:1px solid var(--ps2);font-size:13px;color:var(--ink);animation:pmIn .25s var(--sp)}
+.pm-c button{width:24px;height:24px;min-height:0;padding:0;border:0;border-radius:50%;background:transparent;color:var(--mu);font-size:15px;line-height:1}
+.pm-c button:hover{background:var(--sf);color:var(--er)}
+.pm-c.k{background:color-mix(in srgb,#3b82f6 12%,var(--sf));border-color:color-mix(in srgb,#3b82f6 30%,var(--ln))}
+@keyframes pmIn{from{transform:scale(.85);opacity:0}}
+.pm-0{font-size:13px;color:var(--mu);padding:3px 0}
+.pm-ad{padding:11px;border-radius:14px;background:var(--bg);border:1px solid var(--ln2);margin-bottom:12px}
+.pm-sg{display:flex;gap:3px;padding:3px;border-radius:11px;background:var(--bg2);margin-bottom:8px}
+.pm-sg button{flex:1;min-height:32px;padding:3px 0;border:0;border-radius:8px;background:transparent;color:var(--mu);font-size:13px}
+.pm-sg button[aria-pressed=true]{background:var(--sf);color:var(--ink);font-weight:700;box-shadow:var(--sh1)}
+.pm-cd input[type=search],.pm-cd input[type=text],.pm-cd input[type=number],.pm-cd select{width:100%;box-sizing:border-box}
+.pm-l{display:flex;flex-direction:column;gap:4px;margin-top:6px;max-height:210px;overflow:auto}
+.pm-l:empty{display:none}
+.pm-o{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;min-height:0;padding:7px 11px;text-align:start;border-radius:10px;color:var(--ink);font-weight:500;font-size:13.5px;line-height:1.5}
+.pm-o small{color:var(--mu);font-size:11.5px;font-weight:400}
+.pm-o .on{color:var(--ok)}
+.pm-e{margin:6px 0 0;font-size:12.5px;color:var(--er);line-height:1.6}
+.pm-e:empty{display:none}
+.pm-fl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pm-fl label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--mu)}
+.pm-fl .w{grid-column:1/-1}
+.pm-pk{margin-top:10px;padding:9px 12px;border-radius:12px;border:1px solid color-mix(in srgb,var(--ok) 40%,var(--ln));background:var(--okb);font-size:13.5px}
+.pm-pk small{display:block;color:var(--mu);font-size:12px}
+.pm-b{display:flex;gap:8px;margin-top:4px}
+.pm-b .p{flex:2;padding:11px 18px}.pm-b button:not(.p){flex:1}
+.pm-f{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;padding-top:10px;border-top:1px solid var(--ln2)}
+.pm-f button{min-height:0;padding:4px 0;border:0;background:none;font-size:13px;font-weight:600;color:var(--ac);text-decoration:underline;text-underline-offset:3px}
+.pm-f button.er{color:var(--er)}
+@media (prefers-reduced-motion:reduce){#pem,.pm-cd,.pm-c{transition:none;animation:none}}
 /* ===== جولة تعريفية متحركة ===== */
 #tour{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:12px;
  padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
@@ -719,6 +788,7 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 </nav>
 
 <section data-tb="1"><h2>المواد التي أنهيتها <small id="dn"></small></h2>
+<div class="pe-bar" id="peb"></div>
 <div class="tool"><input type="search" class="q" data-q="lv" placeholder="ابحث عن مادة بالاسم أو الرمز…"><div class="ex"><button data-exp="lv" data-v="1">فتح الكل</button><button data-exp="lv" data-v="0">إغلاق الكل</button></div></div>
 <div id="lv"></div>
 <div class="row" style="margin-top:14px"><button class="p" data-go="2">التالي: بناء الجدول</button></div></section>
@@ -1038,12 +1108,32 @@ ee:{n:'الهندسة الكهربائية',m:'2202',t:136,raw:`0814-140|فيز�
 2202-490|البحوث الجامعية|3|9|||E
 2202-493|اتصالات الألياف الضوئية|3|9|2202-244,2202-331||E`}};
 const MAJ=(()=>{try{const v=localStorage.getItem('cheMaj');return PLANS[v]?v:'che'}catch(e){return'che'}})(),PL=PLANS[MAJ],SK=MAJ=='che'?'chePlan':'chePlan_'+MAJ,RAW=PL.raw+'\n'+UNIV;
-const C=RAW.split('\n').map(l=>{const[n,a,u,v,p,c,g]=l.split('|');return{n,a,u:+u,v:+v,p:p?p.split(','):[],c:c?c.split(','):[],g:g||''}});
-const BY=Object.fromEntries(C.map(c=>[c.n,c])),ALT={'0622-292':'0673-293'},NEED={E:3,U:2};
+const C0=RAW.split('\n').map(l=>{const[n,a,u,v,p,c,g]=l.split('|');return{n,a,u:+u,v:+v,p:p?p.split(','):[],c:c?c.split(','):[],g:g||''}});
+const C=[],BY={};let TOT=PL.t;
+/* الخطة = النص الرسمي + تعديلات الطالب (pe) فوقه. التعديلات مفاتيحها الرموز الأصلية، فتصحيح الخطة الرسمية يصل لمن عدّلها */
+function mkPlan(pe){pe=pe||{};const sub=pe.sub||{},mp=x=>sub[x]?sub[x].n:x;
+ const out=C0.map(c=>{const o={...c,p:c.p.map(mp),c:c.c.map(mp)},s=sub[c.n];if(s)Object.assign(o,{n:s.n,a:s.a,u:s.u,_x:'sub',_o:c.n,_oa:c.a});return o});
+ const has=new Set(out.map(c=>c.n));
+ (pe.add||[]).forEach(a=>{if(has.has(a.n))return;has.add(a.n);out.push({n:a.n,a:a.a,u:a.u,v:a.v,p:[],c:[],g:'',_x:'add'})});
+ for(const k in pe.req||{}){const f=mp(k),c=out.find(x=>x.n==f);if(!c)continue;const r=pe.req[k];
+  c.p=(r.p||[]).map(mp).filter(x=>has.has(x)&&x!=f);c.c=(r.c||[]).map(mp).filter(x=>has.has(x)&&x!=f&&!c.p.includes(x));c._r=1}
+ return out}
+function planCycle(L){const by=Object.fromEntries(L.map(c=>[c.n,c])),st={},path=[];
+ const dfs=n=>{st[n]=1;path.push(n);for(const x of by[n].p){if(!by[x])continue;if(st[x]==1)return path.slice(path.indexOf(x)).concat(x);if(!st[x]){const r=dfs(x);if(r)return r}}st[n]=2;path.pop();return null};
+ for(const c of L)if(!st[c.n]){const r=dfs(c.n);if(r)return r.reverse()}return null}
+function applyPlan(){let L=mkPlan(S.pe);if(planCycle(L)){S.pe={};L=mkPlan({})}
+ C.splice(0,C.length,...L);for(const k in BY)delete BY[k];L.forEach(c=>BY[c.n]=c);
+ TOT=PL.t+L.reduce((a,c)=>a+(c.g?0:c._x=='add'?c.u:c._x=='sub'?c.u-C0.find(o=>o.n==c._o).u:0),0)}
+let PEM=false,PECF=0;
+const pc=c=>c&&c._o?c._o:c?c.n:'';                       /* الرمز الأصلي الثابت للمادة */
+const peTag=c=>c._x=='add'?'<em class="pe-t">مضافة</em>':c._x=='sub'?'<em class="pe-t">بديلة</em>':c._r?'<em class="pe-t">متطلبات معدّلة</em>':'';
+const peFrom=c=>c._o?' · بدلاً من «'+c._oa+'»':'';
+const ALT={'0622-292':'0673-293'},NEED={E:3,U:2};
 const LN={9:'اختياري قسم (3 مواد)',10:'اختياري جامعة (مادتان)'},DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
 const $=id=>document.getElementById(id),lvn=v=>LN[v]||'المستوى '+v;
 let S={done:[],cap:'',ov:[],ovOn:false,sx:'11'},mode='a',SEL=new Set(),IDX={},R=null,FULL=false,DONEU=0;
 try{Object.assign(S,JSON.parse(localStorage.getItem(SK)||'{}'))}catch(e){}
+S.pe=S.pe||{};applyPlan();
 const D=new Set(S.done),save=()=>{S.done=[...D];S.sel=[...SEL];try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}};
 SEL=new Set(S.sel||[]);const hm=m=>String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 const note=(t,e)=>`<div class="msg${e?' e':''}">${t}</div>`;
@@ -1051,7 +1141,7 @@ const lvls=[1,2,3,4,5,6,7,8,9,10];
 
 function r1(){
  $('lv').innerHTML=lvls.map(v=>{const cs=C.filter(c=>c.v==v),n=cs.filter(c=>D.has(c.n)).length;
-  return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary><button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button><div class="g">${cs.map(c=>`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a} <small>${c.n} · ${c.u}س</small></span></label>`).join('')}</div></details>`}).join('');
+  return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary>${PEM?'':`<button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button>`}<div class="g">${cs.map(c=>PEM?`<button type="button" class="per" data-pe="${c.n}"><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}${c.p.length||c.c.length?' · متطلباتها '+(c.p.length+c.c.length):''}</small></span><i class="pe-i" aria-hidden="true">✎</i></button>`:`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}</small></span></label>`).join('')}</div></details>`}).join('');
  const u=C.filter(c=>D.has(c.n)).reduce((a,c)=>a+c.u,0);$('dn').textContent=`(${D.size} مادة، ${u} ساعة)`;hero(u);
  DONEU=u;ovLock();rOv();
  r3()}
@@ -1080,7 +1170,7 @@ function toTop(){const n=$('tabs'),s=[...document.querySelectorAll('section[data
  if(!n||!s)return;let y=0;for(let e=s;e;e=e.offsetParent)y+=e.offsetTop;
  y=Math.max(0,y-n.offsetHeight-10);if(Math.abs(window.scrollY-y)<3)return;
  window.scrollTo({top:y,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
-function hero(u){$('hs1').textContent=D.size;$('hs2').textContent=u;$('hs3').textContent=Math.max(0,PL.t-u);$('hbar').style.width=Math.min(100,u/PL.t*100)+'%'}
+function hero(u){$('hs1').textContent=D.size;$('hs2').textContent=u;$('hs3').textContent=Math.max(0,TOT-u);$('hbar').style.width=Math.min(100,u/TOT*100)+'%'}
 function upd(){const cap=+S.cap,o=$('out'),u=(R&&!o.hidden)?R.reduce((a,x)=>a+x.c.u,0):C.filter(c=>SEL.has(c.n)).reduce((a,c)=>a+c.u,0);$('fb').hidden=!cap;$('fu').textContent=u;$('fc').textContent=cap;$('ff').style.width=Math.min(100,u/(cap||1)*100)+'%'}
 function r1Keep(){const o=[...document.querySelectorAll('#lv details')].map(x=>x.open);r1();document.querySelectorAll('#lv details').forEach((x,i)=>x.open=o[i])}
 let META={};const termTxt=t=>{const k={'10':'الأول','20':'الثاني','30':'الصيفي'}[String(t).slice(4,6)];return k?'الفصل '+k+' '+String(t).slice(0,4)+'هـ':''};
@@ -1157,7 +1247,7 @@ async function exp(isPng){const m=$('xm');let dl=null;try{dl=await claude.use('d
 /* الحل */
 const clash=(a,b)=>a.m.some(x=>b.m.some(y=>x.d==y.d&&x.s<y.e&&y.s<x.e));
 function secsFor(c,full){const ok=full?['متاحه','ممتلئة']:['متاحه'],all=(IDX[c.n]||[]).concat(ALT[c.n]?IDX[ALT[c.n]]||[]:[]);
- const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2))),mine=all.filter(s=>(!s.maj||own(s.maj,PL.m))&&(!s.col||own(s.col,'22'))),good=mine.filter(s=>ok.includes(s.st)&&s.m.length);
+ const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2))),mine=all.filter(s=>c._x||((!s.maj||own(s.maj,PL.m))&&(!s.col||own(s.col,'22')))),good=mine.filter(s=>ok.includes(s.st)&&s.m.length);
  return{all:all.length,mine:mine.length,full:mine.filter(s=>s.st=='ممتلئة').length,good:good.sort((a,b)=>(a.st!='متاحه')-(b.st!='متاحه'))}}
 function solve(cands,secs,cap,ov,auto,need){
  const w=c=>(auto?c.u*(c.g=='E'?50:c.g=='U'?2:ov.has(c.n)||c.v<solve.cl?2000+(9-c.v):c.v==solve.cl?300:c.v==solve.cl+1?10:2):c.u*10+1+(ov.has(c.n)?60:0))+.5,rem=[];let t=0;
@@ -1252,7 +1342,7 @@ const CN={'22':'الهندسة','08':'العلوم','09':'الحاسب وتقن�
 let BR={scope:'p',q:'',day:'',av:false,cf:true,col:'',n:30,hid:0},BGK='',BGM=[],BRV={},BT,TT;
 const cname=n=>BY[n]?BY[n].a:(NM[n]||NMX[n]||'');
 const nrm=s=>String(s||'').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').toLowerCase();
-const okMaj=s=>{const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2)));return(!s.maj||own(s.maj,PL.m))&&(!s.col||own(s.col,'22'))};
+const okMaj=s=>{if(BY[s.num]&&BY[s.num]._x)return true;const own=(v,k)=>(S.sx||'11')=='11'?v.split(' ').includes(k):v.split(' ').some(t=>t.startsWith(k.slice(0,2)));return(!s.maj||own(s.maj,PL.m))&&(!s.col||own(s.col,'22'))};
 function bg(){const k=(S.sx||'11')+':'+SECS.length+':'+(META.checked_at||UPD);if(k!=BGK){BGK=k;const m=new Map();SECS.forEach(s=>{if(s.sx&&s.sx!=(S.sx||'11'))return;(m.get(s.num)||m.set(s.num,{n:s.num,secs:[]}).get(s.num)).secs.push(s)});BGM=[...m.values()];BGM.forEach(g=>g.secs.sort((a,b)=>(a.sec>b.sec)-(a.sec<b.sec)))}return BGM}
 function bfilter(){const terms=nrm(BR.q).split(/\s+/).filter(Boolean),out=[],hb={};
  for(const g of bg()){const c=BY[g.n];if(BR.scope=='p'&&!(c&&!D.has(c.n)))continue;
@@ -1299,7 +1389,7 @@ function applyF(){document.querySelectorAll('[data-q]').forEach(i=>{const q=i.va
  const ds=c.querySelectorAll('details');
  if(!ds.length){let n=0;c.querySelectorAll(':scope>label').forEach(l=>{const h=!q||l.textContent.includes(q)||l.querySelector('input:checked');l.classList.toggle('off',!h);h&&n++});
   const e=$(i.dataset.q+'-e');if(e)e.hidden=n>0;return}
- ds.forEach(d=>{let n=0;d.querySelectorAll('.g label').forEach(l=>{const h=!q||l.textContent.includes(q);l.classList.toggle('off',!h);h&&n++});d.classList.toggle('off',!!q&&!n);if(q)d.open=n>0})})}
+ ds.forEach(d=>{let n=0;d.querySelectorAll('.g label,.g .per').forEach(l=>{const h=!q||l.textContent.includes(q);l.classList.toggle('off',!h);h&&n++});d.classList.toggle('off',!!q&&!n);if(q)d.open=n>0})})}
 document.addEventListener('input',e=>e.target.dataset.q!==undefined&&applyF());
 (function(){const m=$('mj');m.innerHTML=Object.keys(PLANS).map(k=>`<option value="${k}"${k==MAJ?' selected':''}>${PLANS[k].n}</option>`).join('');m.onchange=()=>{try{localStorage.setItem('cheMaj',m.value)}catch(e){}location.reload()};document.title='مخطط التسجيل الذكي – '+PL.n})();$('cap').value=S.cap;$('ovon').checked=S.ovOn;$('ovp').hidden=!S.ovOn;r1();updNote();syncSx();restoreR();go(D.size?2:1,1);try{const th=localStorage.getItem('cheTh');th&&(document.documentElement.dataset.theme=th)}catch(e){}
 
@@ -1384,8 +1474,8 @@ function num(el,to){
 }
 /* بديل hero: نفس حساب الأصل + نسبة الاكتمال وعدّاد */
 hero=function(u){
- num($('hs1'),D.size);num($('hs2'),u);num($('hs3'),Math.max(0,PL.t-u));
- const p=Math.min(100,u/PL.t*100);
+ num($('hs1'),D.size);num($('hs2'),u);num($('hs3'),Math.max(0,TOT-u));
+ const p=Math.min(100,u/TOT*100);
  $('hbar').style.width=p+'%';$('hpc').textContent=Math.round(p)+'%';
 };
 /* تلوين شريط الساعات أحمر عند التجاوز */
@@ -1395,6 +1485,122 @@ upd=function(){_upd();const cap=+S.cap,u=+$('fu').textContent||0;$('fb').classLi
 hero(C.filter(c=>D.has(c.n)).reduce((a,c)=>a+c.u,0));upd();
 })();
 
+/* ===== تعديل الخطة: استبدال، إضافة، متطلبات ===== */
+const peCount=()=>{const p=S.pe||{},ad=(p.add||[]).map(a=>a.n);return Object.keys(p.sub||{}).length+ad.length+Object.keys(p.req||{}).filter(k=>!ad.includes(k)).length};
+const peClone=()=>{const p=S.pe||{};return{sub:{...(p.sub||{})},add:(p.add||[]).map(a=>({...a})),req:JSON.parse(JSON.stringify(p.req||{}))}};
+function peMove(a,b){if(a==b)return;if(D.has(a)){D.delete(a);D.add(b)}if(SEL.has(a)){SEL.delete(a);SEL.add(b)}S.ov=S.ov.map(x=>x==a?b:x)}
+function peDrop(a){D.delete(a);SEL.delete(a);S.ov=S.ov.filter(x=>x!=a)}
+function peSet(pe,msg){
+ const L=mkPlan(pe),cy=planCycle(L);
+ if(cy){const by=Object.fromEntries(L.map(c=>[c.n,c]));return 'هذا يصنع حلقة متطلبات: '+cy.map(n=>'«'+(by[n]?by[n].a:n)+'»').join(' ← ')}
+ S.pe=pe;applyPlan();save();r1Keep();rPe();if(msg)toast(msg);return ''}
+function rPe(){const b=$('peb');if(!b)return;const n=peCount();
+ b.innerHTML=PEM?`<div class="pe-on"><p><b>وضع تعديل الخطة</b>اضغط على أي مادة لتعديل متطلباتها أو استبدالها بمادة أخرى. التعديلات على جهازك فقط.</p><div class="row"><button type="button" id="pea">+ إضافة مادة</button>${n?`<button type="button" id="per"${PECF?' class="cf"':''}>${PECF?'اضغط للتأكيد':'استعادة الأصل'}</button>`:''}<button type="button" class="p" id="pex">تم</button></div></div>`
+  :`<button type="button" id="peo">✎ تعديل الخطة</button>${n?`<span class="pe-s">خطتك معدّلة · <b>${n}</b> ${n==1?'تعديل':n==2?'تعديلان':n<=10?'تعديلات':'تعديلاً'}</span>`:''}`}
+
+/* النافذة */
+const pem=document.createElement('div');pem.id='pem';pem.hidden=true;
+pem.innerHTML='<div class="pm-cd" role="dialog" aria-modal="true" aria-labelledby="pmt"></div>';document.body.appendChild(pem);
+const pcd=pem.firstChild;const pnm=x=>BY[x]?BY[x].a:(cname(x)||x);let PV=null,pmRet=null,pmOv='';
+function pmShow(){if(pem.hidden){pmRet=document.activeElement;pem.hidden=false;pmOv=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';requestAnimationFrame(()=>pem.classList.add('on'))}}
+function pmClose(){if(pem.hidden)return;PV=null;pem.classList.remove('on');document.documentElement.style.overflow=pmOv;
+ setTimeout(()=>{if(!PV){pem.hidden=true;pcd.innerHTML=''}},matchMedia('(prefers-reduced-motion: reduce)').matches?0:200);pmRet&&document.contains(pmRet)&&pmRet.focus({preventScroll:true})}
+const pmHead=(t,s)=>`<div class="pm-h"><div><b id="pmt">${t}</b>${s?'<small>'+s+'</small>':''}</div><button type="button" class="pm-x" data-pm="x" aria-label="إغلاق">×</button></div>`;
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]);
+
+/* عرض المادة ومتطلباتها */
+function pmCourse(n){const c=BY[n];if(!c)return pmClose();
+ PV={v:'c',n,p:c.p.filter(x=>BY[x]),c:c.c.filter(x=>BY[x]),k:'p',e:''};pmShow();pmC(1)}
+function pmC(first){const c=BY[PV.n],r=(S.pe&&S.pe.req||{})[pc(c)];
+ const chips=k=>PV[k].length?PV[k].map(x=>`<span class="pm-c${k=='c'?' k':''}">${esc(pnm(x))}<button type="button" data-pmr="${k}|${x}" aria-label="إزالة ${esc(pnm(x))}">×</button></span>`).join(''):'<span class="pm-0">لا يوجد</span>';
+ pcd.innerHTML=pmHead(esc(c.a)+peTag(c),`${c.n} · ${c.u} ساعات · ${lvn(c.v)}`)+
+  (c._o?`<p class="pm-n">بديلة عن «${esc(c._oa)}» <bdi>${c._o}</bdi>. <button type="button" data-pm="unsub">تراجع عن الاستبدال</button></p>`:'')+
+  `<div class="pm-s"><h4>المتطلبات السابقة<small>تُنهى قبل تسجيلها</small></h4><div class="pm-cs">${chips('p')}</div></div>
+  <div class="pm-s"><h4>المتطلبات المتزامنة<small>تُسجَّل معها أو قبلها</small></h4><div class="pm-cs">${chips('c')}</div></div>
+  <div class="pm-ad"><div class="pm-sg" role="group" aria-label="نوع المتطلب"><button type="button" data-pmk="p" aria-pressed="${PV.k=='p'}">إضافة متطلب سابق</button><button type="button" data-pmk="c" aria-pressed="${PV.k=='c'}">إضافة متزامن</button></div>
+  <input type="search" id="pmq" autocomplete="off" placeholder="ابحث في مواد خطتك بالاسم أو الرمز…" aria-label="ابحث عن مادة لإضافتها متطلباً"><div class="pm-l" id="pml"></div><p class="pm-e" id="pme">${PV.e}</p></div>
+  <div class="pm-b"><button type="button" class="p" data-pm="save">حفظ</button><button type="button" data-pm="x">إلغاء</button></div>
+  <div class="pm-f">${c._x!='add'?'<button type="button" data-pm="rep">استبدالها بمادة أخرى</button>':''}${r?'<button type="button" data-pm="rreq">استعادة متطلباتها الأصلية</button>':''}${c._x=='add'?'<button type="button" class="er" data-pm="del">حذفها من خطتي</button>':''}</div>`;
+ if(first)setTimeout(()=>{const q=$('pmq');q&&!matchMedia('(pointer:coarse)').matches&&q.focus()},60)}
+function pmList(){const q=$('pmq'),l=$('pml');if(!q||!l)return;const t=nrm(q.value).trim().split(/\s+/).filter(Boolean);
+ if(!t.length){l.innerHTML='';return}
+ const xs=C.filter(c=>c.n!=PV.n&&!PV.p.includes(c.n)&&!PV.c.includes(c.n)&&t.every(w=>nrm(c.a+' '+c.n).includes(w))).slice(0,7);
+ l.innerHTML=xs.length?xs.map(c=>`<button type="button" class="pm-o" data-pmo="${c.n}"><span>${esc(c.a)}</span><small>${c.n} · ${lvn(c.v)}</small></button>`).join(''):'<p class="pm-0">لا توجد مادة مطابقة في خطتك.</p>'}
+/* تحقق فوري من الحلقات قبل إضافة متطلب سابق */
+function pmDraftPe(){const pe=peClone(),c=BY[PV.n],k=pc(c),cn=x=>pc(BY[x]);pe.req[k]={p:PV.p.map(cn),c:PV.c.map(cn)};return pe}
+function pmSave(){const c=BY[PV.n],k=pc(c),pe=pmDraftPe();
+ /* إن عادت المتطلبات كما في الأصل فلا نعدّها تعديلاً */
+ const base=mkPlan({...pe,req:Object.fromEntries(Object.entries(pe.req).filter(([x])=>x!=k))}).find(x=>pc(x)==k);
+ const same=(a,b)=>a.length==b.length&&a.every(x=>b.includes(x));
+ if(base&&same(base.p.filter(x=>BY[x]),PV.p)&&same(base.c.filter(x=>BY[x]),PV.c))delete pe.req[k];
+ const er=peSet(pe,'حُفظت متطلبات «'+c.a+'»');if(er){PV.e=er;pmC();return}pmClose()}
+
+/* الاستبدال والإضافة: البحث في مواد Banner */
+function catalog(){const m=new Map();SECS.forEach(s=>{if(!m.has(s.num))m.set(s.num,{n:s.num,a:cname(s.num)||s.num,u:+s.u||0,o:1})});
+ const ad=(o)=>{for(const k in o)if(!m.has(k))m.set(k,{n:k,a:o[k],u:0,o:0})};ad(NM);ad(NMX);return[...m.values()].filter(x=>!BY[x.n])}
+function pmPick(v,n){const c=n&&BY[n];PV={v,n,pk:null,e:''};pmShow();
+ const lv=v=='a'?Math.max(1,Math.min(8,...C.filter(x=>x.v<=8&&!D.has(x.n)).map(x=>x.v).concat(8))):0;
+ pcd.innerHTML=pmHead(v=='r'?'استبدال «'+esc(c.a)+'»':'إضافة مادة إلى خطتك',v=='r'?`${c.n} · ${lvn(c.v)}`:'مادة ليست في الخطة الرسمية')+
+  `<p class="pm-n">${v=='r'?`المادة البديلة تأخذ مكانها في ${lvn(c.v)} وترث متطلباتها، وكل مادة كانت تتطلبها ستتطلب البديلة.`:'ابحث عنها في مواد Banner، ثم حدّد مستواها. يمكنك إضافة متطلباتها بعد الإضافة.'}</p>
+  <input type="search" id="pmq2" autocomplete="off" placeholder="ابحث بالاسم أو الرمز، مثل 2204-410" aria-label="ابحث عن مادة"><div class="pm-l" id="pml2"></div>
+  <div id="pmf" hidden><div class="pm-pk" id="pmpk"></div><div class="pm-fl"><label class="w">اسم المادة<input type="text" id="pma" maxlength="60"></label>
+  <label>الساعات<input type="number" id="pmu" min="1" max="6" inputmode="numeric"></label>${v=='a'?`<label>المستوى<select id="pmv">${[1,2,3,4,5,6,7,8].map(x=>`<option value="${x}"${x==lv?' selected':''}>المستوى ${x}</option>`).join('')}</select></label>`:''}</div></div>
+  <p class="pm-e" id="pme"></p>
+  <div class="pm-b" style="margin-top:12px"><button type="button" class="p" data-pm="${v=='r'?'dorep':'doadd'}" disabled>${v=='r'?'استبدال':'إضافة'}</button><button type="button" data-pm="${v=='r'?'back':'x'}">${v=='r'?'رجوع':'إلغاء'}</button></div>`;
+ setTimeout(()=>{const q=$('pmq2');q&&!matchMedia('(pointer:coarse)').matches&&q.focus()},60)}
+function pmList2(){const q=$('pmq2'),l=$('pml2');if(!q)return;const raw=q.value.trim(),t=nrm(raw).split(/\s+/).filter(Boolean);
+ if(!t.length){l.innerHTML='';return}
+ const xs=catalog().filter(x=>t.every(w=>nrm(x.a+' '+x.n).includes(w))).sort((a,b)=>b.o-a.o).slice(0,8);
+ const m=/^(\d{4})-?(\d{3})$/.exec(raw),code=m&&m[1]+'-'+m[2];
+ let h=xs.map(x=>`<button type="button" class="pm-o" data-pmc="${x.n}"><span>${esc(x.a)}</span><small>${x.n}${x.u?' · '+x.u+'س':''} · ${x.o?'<span class="on">مطروحة الآن</span>':'غير مطروحة هذا الفصل'}</small></button>`).join('');
+ if(code&&!xs.some(x=>x.n==code)&&!BY[code])h+=`<button type="button" class="pm-o" data-pmc="${code}"><span>استخدم الرمز <bdi>${code}</bdi></span><small>غير موجود في Banner الآن</small></button>`;
+ if(code&&BY[code])h=`<p class="pm-0">«${esc(BY[code].a)}» موجودة في خطتك أصلاً.</p>`;
+ l.innerHTML=h||'<p class="pm-0">لا توجد نتيجة. جرّب الرمز كاملاً مثل 2204-410.</p>'}
+function pmChoose(n){const x=catalog().find(y=>y.n==n)||{n,a:'',u:0,o:0};PV.pk=x;
+ $('pml2').innerHTML='';$('pmq2').value='';$('pmf').hidden=false;
+ $('pmpk').innerHTML=`<b><bdi>${x.n}</bdi></b><small>${x.o?'مطروحة هذا الفصل':'غير مطروحة هذا الفصل، ستظهر في خطتك بلا شعب'}</small>`;
+ $('pma').value=x.a&&x.a!=x.n?x.a:'';$('pmu').value=x.u||3;pcd.querySelector('[data-pm=dorep],[data-pm=doadd]').disabled=false;
+ if(!$('pma').value)$('pma').focus()}
+function pmVals(){const a=$('pma').value.trim(),u=+$('pmu').value;
+ if(!a)return{e:'اكتب اسم المادة.'};if(!(u>=1&&u<=6))return{e:'الساعات بين 1 و6.'};return{n:PV.pk.n,a,u}}
+
+pem.addEventListener('click',e=>{const t=e.target.closest('button');if(e.target===pem){pmClose();return}if(!t||!PV)return;const d=t.dataset;
+ if(d.pm=='x')pmClose();
+ else if(d.pmk){PV.k=d.pmk;pcd.querySelectorAll('[data-pmk]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.pmk==PV.k));$('pmq').focus()}
+ else if(d.pmr){const[k,x]=d.pmr.split('|');PV[k]=PV[k].filter(y=>y!=x);PV.e='';const q=$('pmq').value;pmC();$('pmq').value=q;pmList()}
+ else if(d.pmo){const x=d.pmo,k=PV.k,o=k=='p'?'c':'p';PV[k].push(x);PV[o]=PV[o].filter(y=>y!=x);
+  const cy=planCycle(mkPlan(pmDraftPe()));
+  if(cy){PV[k]=PV[k].filter(y=>y!=x);const by=Object.fromEntries(C.map(c=>[c.n,c]));PV.e='لا يمكن: «'+pnm(x)+'» تحتاج «'+BY[PV.n].a+'» قبلها'+(cy.length>3?' عبر «'+cy.slice(1,-1).filter(n=>n!=PV.n&&n!=x).map(n=>by[n]?by[n].a:n).join('» و«')+'»':'')+'، فلا يصح أن تكون متطلباً سابقاً لها.'}
+  else PV.e='';
+  pmC();$('pmq').focus()}
+ else if(d.pm=='save')pmSave();
+ else if(d.pm=='rreq'){const pe=peClone();delete pe.req[pc(BY[PV.n])];peSet(pe,'استُعيدت متطلبات «'+BY[PV.n].a+'» الأصلية');pmCourse(PV.n)}
+ else if(d.pm=='rep')pmPick('r',PV.n);
+ else if(d.pm=='back')pmCourse(PV.n);
+ else if(d.pm=='unsub'){const c=BY[PV.n],o=c._o,pe=peClone();delete pe.sub[o];peMove(c.n,o);peSet(pe,'رجعت «'+c._oa+'» إلى خطتك');pmCourse(o)}
+ else if(d.pm=='del'){const c=BY[PV.n],pe=peClone();pe.add=pe.add.filter(a=>a.n!=c.n);delete pe.req[c.n];peDrop(c.n);peSet(pe,'حُذفت «'+c.a+'» من خطتك');pmClose()}
+ else if(d.pmc)pmChoose(d.pmc);
+ else if(d.pm=='dorep'){const v=pmVals();if(v.e){$('pme').textContent=v.e;return}
+  const c=BY[PV.n],o=pc(c),old=c.n,oa=c.a,pe=peClone();if(v.n==o)delete pe.sub[o];else pe.sub[o]=v;peMove(old,v.n);
+  const er=peSet(pe,'استُبدلت «'+oa+'» بـ«'+v.a+'»');if(er){peMove(v.n,old);$('pme').textContent=er;return}pmClose()}
+ else if(d.pm=='doadd'){const v=pmVals();if(v.e){$('pme').textContent=v.e;return}
+  const pe=peClone();pe.add.push({...v,v:+$('pmv').value});const er=peSet(pe,'أُضيفت «'+v.a+'» إلى '+lvn(+$('pmv').value)+'. أضف متطلباتها إن وُجدت');
+  if(er){$('pme').textContent=er;return}pmCourse(v.n)}});
+pem.addEventListener('input',e=>{if(e.target.id=='pmq')pmList();else if(e.target.id=='pmq2')pmList2()});
+pem.addEventListener('keydown',e=>{
+ if(e.key=='Escape'){e.preventDefault();pmClose()}
+ else if(e.key=='Enter'&&(e.target.id=='pmq'||e.target.id=='pmq2')){const f=pcd.querySelector(e.target.id=='pmq'?'#pml .pm-o':'#pml2 .pm-o');if(f){e.preventDefault();f.click()}}
+ else if(e.key=='Tab'){const f=[...pcd.querySelectorAll('button:not([disabled]),input,select')].filter(x=>x.offsetParent);if(!f.length)return;const a=f.indexOf(document.activeElement);
+  if(e.shiftKey&&a<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&a==f.length-1){e.preventDefault();f[0].focus()}}});
+
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('button');if(!t)return;
+ if(t.id=='peo'){PEM=true;PECF=0;r1Keep();rPe()}
+ else if(t.id=='pex'){PEM=false;PECF=0;r1Keep();rPe()}
+ else if(t.id=='pea')pmPick('a');
+ else if(t.id=='per'){if(!PECF){PECF=1;rPe();setTimeout(()=>{if(PECF){PECF=0;rPe()}},3500);return}
+  PECF=0;for(const c of C)if(c._o)peMove(c.n,c._o);for(const c of C)if(c._x=='add')peDrop(c.n);peSet({},'استُعيدت الخطة الأصلية')}
+ else if(t.dataset.pe)pmCourse(t.dataset.pe)});
+rPe();
 /* ===== جولة تعريفية للزائر الجديد ===== */
 (function(){
 const K='kuTour1',RM=matchMedia('(prefers-reduced-motion: reduce)');
@@ -1437,7 +1643,7 @@ const ST=[
   await W8(300,t);hideF(st);await W8(1700,t)}},
 
 {t:'حدّد ما أنهيته',w:'في تبويب «خطتي»',
- x:'علّم المواد التي اجتزتها، أو اضغط <b>تحديد كل المستوى</b> لتأشيره دفعة واحدة. بهذا يعرف البرنامج مستواك وما ينقصك.',
+ x:'علّم المواد التي اجتزتها، أو اضغط <b>تحديد كل المستوى</b> لتأشيره دفعة واحدة. بهذا يعرف البرنامج مستواك وما ينقصك. وإن اختلفت خطتك عن الرسمية فعدّلها من <b>تعديل الخطة</b>.',
  h:()=>`<div class="m-lv"><div class="m-lh"><b>المستوى 1</b><span><em class="n">0/3</em><i class="m-bar"><i></i></i></span></div><span class="m-all">تحديد كل المستوى</span>${
   [['تفاضل وتكامل 1','0817-144 · 4س'],['فيزياء عامة 1','0814-140 · 3س'],['كيمياء عامة 1','0815-140 · 3س']].map(r=>`<div class="m-cr"><i class="m-cb"></i>${r[0]}<small>${r[1]}</small></div>`).join('')}</div>`,
  run:async(st,t)=>{const cb=ga(st,'.m-cb'),n=g1(st,'.n'),bar=g1(st,'.m-bar i'),set=k=>{n.textContent=k+'/3';bar.style.width=(k/3*100)+'%'};
