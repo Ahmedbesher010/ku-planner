@@ -763,6 +763,28 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .m-lt{--bg:#f5f1ef;--bg2:#eae1de;--sf:#fff;--ink:#1d1719;--mu:#807277;--ln:#e9e0dd;--ln2:#f2ebe8;--h1:#56081b;--h2:#8a132e;--h3:#ab2644}
 .m-pg .m-hero{transition:background .45s}
 
+.m-peb{margin-bottom:8px}
+.m-pb{display:inline-block;padding:4px 13px;border-radius:999px;border:1px solid var(--ln);background:var(--sf);color:var(--ac);font-size:12px;font-weight:600;transition:background .2s,border-color .2s}
+.m-pb.on{background:var(--ps);border-color:var(--ac)}
+.m-cr.dash{border-style:dashed;border-color:color-mix(in srgb,var(--ac) 40%,var(--ln))}
+.m-cr .m-ed{margin-inline-start:6px;width:22px;height:22px;border-radius:7px;background:var(--ps);color:var(--ac);display:grid;place-items:center;font-size:11px;font-style:normal;flex:none}
+.m-cr>span{min-width:0}
+.tv .w:has(.m-pm){position:static}
+.m-pm{position:absolute;inset-inline:16px;top:12px;padding:10px 12px;border-radius:14px;background:var(--sf);border:1px solid var(--ln);box-shadow:var(--sh3);opacity:0;transform:translateY(8px) scale(.97);transition:opacity .25s,transform .3s var(--ez);pointer-events:none;z-index:3}
+.m-pm.on{opacity:1;transform:none}
+.m-pm b{display:block;font-size:12.5px;margin-bottom:4px}
+.m-pl{font-size:11px;color:var(--mu);margin-bottom:4px}
+.m-cs{display:flex;flex-wrap:wrap;gap:5px;min-height:26px}
+.m-cs .pm-c{font-size:11px;padding:2px 9px}
+.m-cs .pm-c i{font-style:normal;color:var(--mu);margin-inline-start:3px}
+.m-pa{margin-top:7px;padding:5px 9px;border-radius:9px;border:1px dashed var(--ln);color:var(--mu);font-size:11px}
+.m-ps{margin-top:7px;text-align:center;padding:6px;border-radius:9px;background:var(--acf);color:var(--acfi);font-weight:700;font-size:12px}
+.m-st{margin-top:10px;padding:9px 12px;border-radius:12px;background:var(--erb);border:1px solid color-mix(in srgb,var(--er) 25%,transparent);border-inline-start:3px solid var(--er);font-size:11.5px;line-height:1.6;transition:background .4s,border-color .4s}
+.m-st b{display:block;font-size:12px}
+.m-st span{display:block;color:var(--ink2)}
+.m-st .m-sb{display:inline-block;margin-top:6px;padding:5px 13px;border-radius:999px;background:var(--acf);color:var(--acfi);font-weight:700;font-size:11.5px}
+.m-st .m-sb.ld{animation:mPu .7s ease-in-out infinite}
+.m-st.ok{background:var(--okb);border-color:color-mix(in srgb,var(--ok) 30%,transparent);border-inline-start-color:var(--ok)}
 .tf.cur{width:22px;height:26px;margin:-3px 0 0 -3px;border:0;border-radius:0;background:none;box-shadow:none}
 .tf.cur:before{content:'';position:absolute;inset:0;background:#1d1719;clip-path:polygon(0 0,0 78%,24% 60%,40% 96%,56% 89%,40% 54%,74% 54%);filter:drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 1.2px #fff) drop-shadow(0 2px 3px rgba(0,0,0,.4))}
 .tf.cur:after{inset:auto;left:-14px;top:-14px;width:28px;height:28px;border-color:var(--ac)}
@@ -1727,7 +1749,7 @@ const MJ=['الهندسة الكيميائية','الهندسة المدنية',
 
 const ST=[
 {t:'أهلاً بك في مخطط التسجيل الذكي',
- x:'يبني لك جدول الترم من شعب <b>Banner</b> بلا تعارض، ويراعي خطتك ومتطلباتها. ثماني خطوات قصيرة وتعرف كل شيء.',
+ x:'يبني لك جدول الترم من شعب <b>Banner</b> بلا تعارض، ويراعي خطتك ومتطلباتها. عشر خطوات قصيرة وتعرف كل شيء.',
  h:()=>grid(1)+'<span class="m-ok">✓ بلا تعارض</span>',
  run:async(st,t)=>{await drop(st,t,230);await W8(250,t);g1(st,'.m-ok').classList.add('on');await W8(2600,t)},
  fin:st=>{ga(st,'.m-ev').forEach(e=>e.classList.remove('o'));g1(st,'.m-ok').classList.add('on')}},
@@ -1742,7 +1764,7 @@ const ST=[
   await W8(300,t);hideF(st);await W8(1700,t)}},
 
 {t:'حدّد ما أنهيته',w:'في تبويب «خطتي»',
- x:'علّم المواد التي اجتزتها، أو اضغط <b>تحديد كل المستوى</b> لتأشيره دفعة واحدة. بهذا يعرف البرنامج مستواك وما ينقصك. وإن اختلفت خطتك عن الرسمية فعدّلها من <b>تعديل الخطة</b>.',
+ x:'علّم المواد التي اجتزتها، أو اضغط <b>تحديد كل المستوى</b> لتأشيره دفعة واحدة. بهذا يعرف البرنامج مستواك وما ينقصك.',
  h:()=>`<div class="m-lv"><div class="m-lh"><b>المستوى 1</b><span><em class="n">0/3</em><i class="m-bar"><i></i></i></span></div><span class="m-all">تحديد كل المستوى</span>${
   [['تفاضل وتكامل 1','0817-144 · 4س'],['فيزياء عامة 1','0814-140 · 3س'],['كيمياء عامة 1','0815-140 · 3س']].map(r=>`<div class="m-cr"><i class="m-cb"></i>${r[0]}<small>${r[1]}</small></div>`).join('')}</div>`,
  run:async(st,t)=>{const cb=ga(st,'.m-cb'),n=g1(st,'.n'),bar=g1(st,'.m-bar i'),set=k=>{n.textContent=k+'/3';bar.style.width=(k/3*100)+'%'};
@@ -1751,6 +1773,19 @@ const ST=[
   const al=g1(st,'.m-all');await tap(st,al,t);al.classList.add('pr');cb[2].classList.add('on');set(3);g1(st,'.m-lv').classList.add('dn');
   await W8(250,t);al.classList.remove('pr');hideF(st);await W8(1900,t)},
  fin:st=>{ga(st,'.m-cb').forEach(c=>c.classList.add('on'));g1(st,'.n').textContent='3/3';g1(st,'.m-bar i').style.width='100%';g1(st,'.m-lv').classList.add('dn')}},
+
+{t:'عدّل خطتك إن اختلفت',w:'من «✎ تعديل الخطة» في تبويب «خطتي»',
+ x:'غيّر متطلبات أي مادة بالحذف والإضافة، أو <b>استبدلها</b> بمادة أخرى فترث مكانها ومتطلباتها، أو <b>أضف</b> مادة ليست في الخطة. يمنعك الموقع من المتطلبات المتناقضة، وتستطيع استعادة الأصل متى شئت.',
+ h:()=>`<div class="m-peb"><span class="m-pb">✎ تعديل الخطة</span></div><div class="m-cr m-per"><span>هندسة التفاعلات الكيميائية</span><small>2204-304</small><i class="m-ed">✎</i></div><div class="m-cr" style="opacity:.6"><span>انتقال المادة</span><small>2204-308</small></div>
+  <div class="m-pm"><b>هندسة التفاعلات الكيميائية</b><div class="m-pl">المتطلبات السابقة</div><div class="m-cs"><span class="pm-c">كيمياء عضوية <i>×</i></span><span class="pm-c">ديناميكا حرارية 2 <i class="x2">×</i></span></div><div class="m-pa">+ أضف متطلباً</div><div class="m-ps">حفظ</div></div>`,
+ run:async(st,t)=>{const pb=g1(st,'.m-pb'),row=g1(st,'.m-per'),pm=g1(st,'.m-pm'),cs=g1(st,'.m-cs');
+  await W8(300,t);await tap(st,pb,t);pb.classList.add('on');ga(st,'.m-cr').forEach(r=>r.classList.add('dash'));await W8(250,t);
+  await tap(st,g1(st,'.m-ed'),t);pm.classList.add('on');await W8(500,t);
+  const x=g1(st,'.x2');await tap(st,x,t);x.parentElement.remove();await W8(300,t);
+  await tap(st,g1(st,'.m-pa'),t);const c=document.createElement('span');c.className='pm-c';c.innerHTML='انتقال الحرارة <i>×</i>';cs.appendChild(c);await W8(450,t);
+  await tap(st,g1(st,'.m-ps'),t);pm.classList.remove('on');await W8(250,t);
+  const tg=document.createElement('em');tg.className='pe-t';tg.textContent='متطلبات معدّلة';row.firstElementChild.appendChild(tg);hideF(st);await W8(2000,t)},
+ fin:st=>{g1(st,'.m-pb').classList.add('on');const tg=document.createElement('em');tg.className='pe-t';tg.textContent='متطلبات معدّلة';g1(st,'.m-per').firstElementChild.appendChild(tg)}},
 
 {t:'ساعاتك وتجاوز المتطلب',w:'في تبويب «البناء»',
  x:'اكتب ساعاتك المسموحة أو اختر من الأزرار، ولن يتجاوزها جدولك. وإن كان لديك تجاوز معتمد فعّله وحدد مادته، وهو متاح لمن أنهى <b>99 ساعة</b> فأكثر.',
@@ -1794,6 +1829,16 @@ const ST=[
    to.textContent='توزيع '+(k%3+1)+' من 3'+(k==3?' · رجعنا للبداية':'');to.classList.add('on');
    await W8(1300,t);to.classList.remove('on')}
   hideF(st);await W8(900,t)}},
+
+{t:'حين تتأخر الشعب',w:'التحديث من الحاسوب',
+ x:'إن توقف تحديث الشعب أكثر من أسبوعين يظهر تنبيه أحمر في البناء والتصفح، فيه زر <b>حدّث الشعب من جهازك</b>. من الحاسوب تجلبها من Banner بنفسك في دقيقة، ويشرح لك الموقع الخطوات. وتجده دائماً تحت أزرار الطلاب والطالبات: «حدّثها من جهازك».',
+ h:()=>`<div class="m-hero"><small>مخطط التسجيل الذكي</small><span class="m-fr r"><i></i><em>قد تكون الشعب قديمة · قبل 23 يوماً</em></span></div>
+  <div class="m-st"><b>الشعب المعروضة قد تكون من فصل سابق</b><span>خطتك صحيحة، لكن الشعب ربما تغيّرت.</span><span class="m-sb">حدّث الشعب من جهازك</span></div>`,
+ run:async(st,t)=>{const sb=g1(st,'.m-sb'),bx=g1(st,'.m-st'),fr=g1(st,'.m-fr'),em=g1(st,'.m-fr em');
+  await W8(500,t);await tap(st,sb,t);sb.classList.add('ld');sb.textContent='جارٍ الجلب من Banner…';hideF(st);await W8(1300,t);
+  bx.classList.add('ok');bx.innerHTML='<b>تم تحديث الشعب من جهازك ✓</b><span>8,040 شعبة · الفصل الثاني 1448هـ</span>';
+  fr.classList.remove('r');em.textContent='الشعب من جهازك · الآن';re(em,'fl');await W8(2400,t)},
+ fin:st=>{const bx=g1(st,'.m-st');bx.classList.add('ok');bx.innerHTML='<b>تم تحديث الشعب من جهازك ✓</b><span>8,040 شعبة · الفصل الثاني 1448هـ</span>';g1(st,'.m-fr').classList.remove('r');g1(st,'.m-fr em').textContent='الشعب من جهازك · الآن'}},
 
 {t:'جاهز!',w:'زرّا ؟ والوضع أعلى الصفحة',
  x:'شارة «الشعب محدّثة» تخبرك متى فُحصت الشعب آخر مرة، وتُفحص كل 3 ساعات. وزر الوضع للفاتح والليلي، وزر <b>؟</b> يعيد هذه الجولة.<small>موقع غير رسمي، راجع Banner قبل التسجيل.</small>',
