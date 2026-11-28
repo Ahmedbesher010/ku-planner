@@ -627,6 +627,8 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .pi-st.ok{background:var(--okb);color:var(--ok)}
 .pi-st.go{background:color-mix(in srgb,#3b82f6 12%,var(--sf));color:color-mix(in srgb,#2563eb 80%,var(--ink))}
 .pi-st.no{background:var(--wrb);color:var(--wr)}
+.pi-why{margin:-4px 0 12px;font-size:13px;line-height:1.7;color:var(--wr)}
+.pi-why.go{color:var(--mu)}
 .pi-of{font-size:12.5px;color:var(--mu);margin:-6px 0 12px}
 .pi-of b{color:var(--ok);font-weight:600}
 .pi-l{display:flex;flex-direction:column;gap:4px}
@@ -1674,16 +1676,22 @@ function pmVals(){const a=$('pma').value.trim(),u=+$('pmu').value;
  if(!a)return{e:'اكتب اسم المادة.'};if(!(u>=1&&u<=6))return{e:'الساعات بين 1 و6.'};return{n:PV.pk.n,a,u}}
 
 /* لوحة تفاصيل المادة (للعرض فقط) */
+/* هل تُسجَّل الآن؟ المتطلبات السابقة منجزة، وكل متزامن غير منجز متاح هو أيضاً */
+function avl(x,sn){if(D.has(x))return{s:'d'};const y=BY[x],m=y.p.filter(z=>BY[z]&&!D.has(z));if(m.length)return{s:'l',m};
+ sn=sn||new Set();sn.add(x);for(const z of y.c.filter(z=>BY[z]&&!D.has(z)&&!sn.has(z))){const r=avl(z,sn);if(r.s=='l')return{s:'l',co:z,r}}return{s:'a'}}
 function pmInfo(n,h){const c=BY[n];if(!c)return pmClose();PV={v:'i',n,h:h||[]};pmShow();
  const rv=revMap(),dir=(rv[n]||[]).filter(x=>BY[x]),all=downOf(n,rv),pre=c.p.filter(x=>BY[x]),co=c.c.filter(x=>BY[x]),miss=pre.filter(x=>!D.has(x));
  const row=(x,ic,cl,sub)=>{const y=BY[x];return`<button type="button" class="pi-r" data-pmi="${x}"><i class="${cl}" aria-hidden="true">${ic}</i><span>${esc(y.a)}<small>${x} · ${lvn(y.v)}${sub?' · '+sub:''}</small></span></button>`};
  const sec=(t,s,b)=>`<div class="pm-s"><h4>${t}${s?'<small>'+s+'</small>':''}</h4>${b}</div>`;
- const st=D.has(n)?'<p class="pi-st ok">✓ أنجزتها</p>':miss.length?`<p class="pi-st no">مقفلة · ينقصك ${miss.length==1?'متطلب واحد':miss.length==2?'متطلبان':miss.length+' متطلبات'}</p>`:'<p class="pi-st go">متاحة لك الآن</p>';
+ const A=avl(n),q=x=>'«'+esc(pnm(x))+'»',qs=a=>a.map(q).join(' و'),cs=co.filter(x=>!D.has(x)),
+  cw=A.co&&(A.r.m?`${q(A.co)} تُسجَّل معها، وهي تحتاج ${qs(A.r.m)} أولاً.`:`${q(A.co)} تُسجَّل معها، وهي مقفلة الآن.`);
+ const st=D.has(n)?'<p class="pi-st ok">✓ أنجزتها</p>':miss.length?`<p class="pi-st no">مقفلة · ينقصك ${miss.length==1?'متطلب واحد':miss.length==2?'متطلبان':miss.length+' متطلبات'}</p>`:
+  A.s=='l'?`<p class="pi-st no">مقفلة · بسبب متزامنها</p><p class="pi-why">${cw}</p>`:`<p class="pi-st go">متاحة لك الآن</p>${cs.length?`<p class="pi-why go">سجّلها مع ${qs(cs)}، أو بعد إنجاز${cs.length==2?'هما':'ها'}.</p>`:''}`;
  let of='';if(!D.has(n)&&SECS.length){const f=secsFor(c,1);of=`<p class="pi-of">${f.mine?(f.good.filter(s=>s.st=='متاحه').length?`<b>مطروحة هذا الفصل</b> · ${f.mine} شعبة`:`مطروحة هذا الفصل · ${f.mine} شعبة، كلها ممتلئة أو مغلقة`):'غير مطروحة هذا الفصل'}</p>`}
  const bk=PV.h.length?`<button type="button" class="pm-bk" data-pm="ib" aria-label="رجوع إلى «${esc(pnm(PV.h[PV.h.length-1]))}»">→</button>`:'';
  pcd.innerHTML=pmHead(esc(c.a)+peTag(c),`${c.n} · ${c.u} ساعات · ${lvn(c.v)}`).replace('<div class="pm-h">','<div class="pm-h">'+bk)+st+of+
   sec('تحتاج قبلها',pre.length?(miss.length?'ينقصك '+miss.length:'أنجزتها كلها'):'',pre.length?`<div class="pi-l">${pre.map(x=>D.has(x)?row(x,'✓','y','منجزة'):row(x,'!','n','لم تُنجز')).join('')}</div>`:'<span class="pm-0">لا شيء، يمكن تسجيلها من البداية</span>')+
-  (co.length?sec('تُسجَّل معها','أو قبلها',`<div class="pi-l">${co.map(x=>row(x,'+','c',D.has(x)?'منجزة':'')).join('')}</div>`):'')+
+  (co.length?sec('تُسجَّل معها','أو قبلها',`<div class="pi-l">${co.map(x=>{const r=avl(x);return r.s=='d'?row(x,'✓','y','منجزة'):r.s=='l'?row(x,'!','n','مقفلة'):row(x,'+','c','تُسجَّل معها')}).join('')}</div>`):'')+
   sec('تفتح لك مباشرة',dir.length?mdd(dir.length):'',dir.length?`<div class="pi-l">${dir.map(x=>row(x,'←','u',D.has(x)?'منجزة':'')).join('')}</div>`:'<span class="pm-0">لا تعتمد عليها مادة أخرى في خطتك</span>')+
   (all.length>dir.filter(x=>!D.has(x)).length?`<p class="pi-dn">وتعتمد عليها حتى نهاية الخطة <b>${mdd(all.length)}</b> لم تُنجزها بعد${all.length>=KEYN?'، فتأخيرها يؤخّر الكثير.':'.'}</p>`:'')+
   `<div class="pm-f"><button type="button" data-pm="ie">تعديل متطلباتها أو استبدالها</button></div>`;
