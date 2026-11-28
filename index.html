@@ -621,8 +621,6 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .g label .ci:hover{border-color:var(--ac);color:var(--ac)}
 .g label .ci::before{content:'';position:absolute;inset:-7px}
 .g label .ci{position:relative}
-.kb{display:inline-block;margin-inline-start:6px;padding:0 7px;border-radius:999px;font-size:10.5px;font-weight:700;font-style:normal;line-height:1.7;vertical-align:2px;white-space:nowrap;
- background:color-mix(in srgb,var(--ac) 10%,var(--sf));color:var(--ac);border:1px solid color-mix(in srgb,var(--ac) 28%,transparent)}
 .pi-st{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700}
 .pi-st.ok{background:var(--okb);color:var(--ok)}
 .pi-st.go{background:color-mix(in srgb,#3b82f6 12%,var(--sf));color:color-mix(in srgb,#2563eb 80%,var(--ink))}
@@ -1237,9 +1235,9 @@ const lvls=[1,2,3,4,5,6,7,8,9,10];
 function revMap(){const r={};C.forEach(c=>c.p.forEach(x=>BY[x]&&(r[x]=r[x]||[]).push(c.n)));return r}
 function downOf(n,rv){const seen=new Set(),q=[n];while(q.length)for(const y of rv[q.pop()]||[])if(!seen.has(y)){seen.add(y);q.push(y)}return[...seen].filter(x=>!D.has(x))}
 const KEYN=8,mdd=k=>k==1?'مادة واحدة':k==2?'مادتان':k+' '+(k<=10?'مواد':'مادة');
-function r1(){const rv=PEM?{}:revMap();
+function r1(){
  $('lv').innerHTML=lvls.map(v=>{const cs=C.filter(c=>c.v==v),n=cs.filter(c=>D.has(c.n)).length;
-  return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary>${PEM?'':`<button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button>`}<div class="g">${cs.map(c=>PEM?`<button type="button" class="per" data-pe="${c.n}"><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}${c.p.length||c.c.length?' · متطلباتها '+(c.p.length+c.c.length):''}</small></span><i class="pe-i" aria-hidden="true">✎</i></button>`:(k=>`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a}${peTag(c)}${k>=KEYN?`<i class="kb" title="مادة مفتاحية: تعتمد عليها ${mdd(k)} في خطتك">🔑 تفتح ${mdd(k)}</i>`:''} <small>${c.n} · ${c.u}س${peFrom(c)}</small></span><button type="button" class="ci" data-ci="${c.n}" aria-label="تفاصيل ${c.a}">i</button></label>`)(D.has(c.n)?0:downOf(c.n,rv).length)).join('')}</div></details>`}).join('');
+  return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary>${PEM?'':`<button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button>`}<div class="g">${cs.map(c=>PEM?`<button type="button" class="per" data-pe="${c.n}"><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}${c.p.length||c.c.length?' · متطلباتها '+(c.p.length+c.c.length):''}</small></span><i class="pe-i" aria-hidden="true">✎</i></button>`:`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}</small></span><button type="button" class="ci" data-ci="${c.n}" aria-label="تفاصيل ${c.a}">i</button></label>`).join('')}</div></details>`}).join('');
  const u=C.filter(c=>D.has(c.n)).reduce((a,c)=>a+c.u,0);$('dn').textContent=`(${D.size} مادة، ${u} ساعة)`;hero(u);
  DONEU=u;ovLock();rOv();
  r3()}
