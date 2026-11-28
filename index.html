@@ -615,6 +615,33 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .pm-f button{min-height:0;padding:4px 0;border:0;background:none;font-size:13px;font-weight:600;color:var(--ac);text-decoration:underline;text-underline-offset:3px}
 .pm-f button.er{color:var(--er)}
 @media (prefers-reduced-motion:reduce){#pem,.pm-cd,.pm-c{transition:none;animation:none}}
+/* ===== تفاصيل المادة ===== */
+.g label .ci{flex:none;align-self:center;display:grid;place-items:center;width:30px;height:30px;min-height:0;padding:0;margin-inline-start:2px;border-radius:50%;
+ border:1px solid var(--ln);background:var(--sf);color:var(--mu);font:italic 700 14px/1 Georgia,'Times New Roman',serif}
+.g label .ci:hover{border-color:var(--ac);color:var(--ac)}
+.g label .ci::before{content:'';position:absolute;inset:-7px}
+.g label .ci{position:relative}
+.kb{display:inline-block;margin-inline-start:6px;padding:0 7px;border-radius:999px;font-size:10.5px;font-weight:700;font-style:normal;line-height:1.7;vertical-align:2px;white-space:nowrap;
+ background:color-mix(in srgb,var(--ac) 10%,var(--sf));color:var(--ac);border:1px solid color-mix(in srgb,var(--ac) 28%,transparent)}
+.pi-st{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.pi-st.ok{background:var(--okb);color:var(--ok)}
+.pi-st.go{background:color-mix(in srgb,#3b82f6 12%,var(--sf));color:color-mix(in srgb,#2563eb 80%,var(--ink))}
+.pi-st.no{background:var(--wrb);color:var(--wr)}
+.pi-of{font-size:12.5px;color:var(--mu);margin:-6px 0 12px}
+.pi-of b{color:var(--ok);font-weight:600}
+.pi-l{display:flex;flex-direction:column;gap:4px}
+.pi-r{display:flex;align-items:center;gap:9px;width:100%;min-height:0;padding:8px 11px;text-align:start;border-radius:11px;border:1px solid var(--ln2);background:var(--bg);color:var(--ink);font-weight:500;font-size:13.5px;line-height:1.5}
+.pi-r:hover{border-color:color-mix(in srgb,var(--ac) 40%,var(--ln));background:var(--sf2)}
+.pi-r>span{flex:1;min-width:0}
+.pi-r small{display:block;color:var(--mu);font-size:11.5px;font-weight:400}
+.pi-r i{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;font-style:normal;font-size:12px;font-weight:700}
+.pi-r i.y{background:var(--okb);color:var(--ok)}
+.pi-r i.n{background:var(--wrb);color:var(--wr)}
+.pi-r i.c{background:color-mix(in srgb,#3b82f6 14%,var(--sf));color:#2563eb}
+.pi-r i.u{background:var(--ps);color:var(--ac)}
+.pi-dn{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--ps);font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.pi-dn b{color:var(--ac)}
+.pm-h .pm-bk{flex:none;width:36px;height:36px;min-height:0;padding:0;border-radius:11px;font-size:17px;line-height:1;color:var(--mu)}
 /* ===== جولة تعريفية متحركة ===== */
 #tour{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:12px;
  padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
@@ -1204,9 +1231,13 @@ SEL=new Set(S.sel||[]);const hm=m=>String(m/60|0).padStart(2,'0')+':'+String(m%6
 const note=(t,e)=>`<div class="msg${e?' e':''}">${t}</div>`;
 const lvls=[1,2,3,4,5,6,7,8,9,10];
 
-function r1(){
+/* ما تفتحه كل مادة: مباشرة وحتى نهاية الخطة (من الخطة الحالية بعد التعديل) */
+function revMap(){const r={};C.forEach(c=>c.p.forEach(x=>BY[x]&&(r[x]=r[x]||[]).push(c.n)));return r}
+function downOf(n,rv){const seen=new Set(),q=[n];while(q.length)for(const y of rv[q.pop()]||[])if(!seen.has(y)){seen.add(y);q.push(y)}return[...seen].filter(x=>!D.has(x))}
+const KEYN=8,mdd=k=>k==1?'مادة واحدة':k==2?'مادتان':k+' '+(k<=10?'مواد':'مادة');
+function r1(){const rv=PEM?{}:revMap();
  $('lv').innerHTML=lvls.map(v=>{const cs=C.filter(c=>c.v==v),n=cs.filter(c=>D.has(c.n)).length;
-  return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary>${PEM?'':`<button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button>`}<div class="g">${cs.map(c=>PEM?`<button type="button" class="per" data-pe="${c.n}"><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}${c.p.length||c.c.length?' · متطلباتها '+(c.p.length+c.c.length):''}</small></span><i class="pe-i" aria-hidden="true">✎</i></button>`:`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}</small></span></label>`).join('')}</div></details>`}).join('');
+  return `<details${n&&n<cs.length?' open':''}><summary><span>${lvn(v)}</span><small>${n}/${cs.length}</small><i class="pb"><i style="width:${n/cs.length*100}%"></i></i></summary>${PEM?'':`<button data-all="${v}">${n==cs.length?'إلغاء الكل':'تحديد كل المستوى'}</button>`}<div class="g">${cs.map(c=>PEM?`<button type="button" class="per" data-pe="${c.n}"><span>${c.a}${peTag(c)} <small>${c.n} · ${c.u}س${peFrom(c)}${c.p.length||c.c.length?' · متطلباتها '+(c.p.length+c.c.length):''}</small></span><i class="pe-i" aria-hidden="true">✎</i></button>`:(k=>`<label><input type="checkbox" data-d="${c.n}"${D.has(c.n)?' checked':''}><span>${c.a}${peTag(c)}${k>=KEYN?`<i class="kb" title="مادة مفتاحية: تعتمد عليها ${mdd(k)} في خطتك">🔑 تفتح ${mdd(k)}</i>`:''} <small>${c.n} · ${c.u}س${peFrom(c)}</small></span><button type="button" class="ci" data-ci="${c.n}" aria-label="تفاصيل ${c.a}">i</button></label>`)(D.has(c.n)?0:downOf(c.n,rv).length)).join('')}</div></details>`}).join('');
  const u=C.filter(c=>D.has(c.n)).reduce((a,c)=>a+c.u,0);$('dn').textContent=`(${D.size} مادة، ${u} ساعة)`;hero(u);
  DONEU=u;ovLock();rOv();
  r3()}
@@ -1642,8 +1673,27 @@ function pmChoose(n){const x=catalog().find(y=>y.n==n)||{n,a:'',u:0,o:0};PV.pk=x
 function pmVals(){const a=$('pma').value.trim(),u=+$('pmu').value;
  if(!a)return{e:'اكتب اسم المادة.'};if(!(u>=1&&u<=6))return{e:'الساعات بين 1 و6.'};return{n:PV.pk.n,a,u}}
 
+/* لوحة تفاصيل المادة (للعرض فقط) */
+function pmInfo(n,h){const c=BY[n];if(!c)return pmClose();PV={v:'i',n,h:h||[]};pmShow();
+ const rv=revMap(),dir=(rv[n]||[]).filter(x=>BY[x]),all=downOf(n,rv),pre=c.p.filter(x=>BY[x]),co=c.c.filter(x=>BY[x]),miss=pre.filter(x=>!D.has(x));
+ const row=(x,ic,cl,sub)=>{const y=BY[x];return`<button type="button" class="pi-r" data-pmi="${x}"><i class="${cl}" aria-hidden="true">${ic}</i><span>${esc(y.a)}<small>${x} · ${lvn(y.v)}${sub?' · '+sub:''}</small></span></button>`};
+ const sec=(t,s,b)=>`<div class="pm-s"><h4>${t}${s?'<small>'+s+'</small>':''}</h4>${b}</div>`;
+ const st=D.has(n)?'<p class="pi-st ok">✓ أنجزتها</p>':miss.length?`<p class="pi-st no">مقفلة · ينقصك ${miss.length==1?'متطلب واحد':miss.length==2?'متطلبان':miss.length+' متطلبات'}</p>`:'<p class="pi-st go">متاحة لك الآن</p>';
+ let of='';if(!D.has(n)&&SECS.length){const f=secsFor(c,1);of=`<p class="pi-of">${f.mine?(f.good.filter(s=>s.st=='متاحه').length?`<b>مطروحة هذا الفصل</b> · ${f.mine} شعبة`:`مطروحة هذا الفصل · ${f.mine} شعبة، كلها ممتلئة أو مغلقة`):'غير مطروحة هذا الفصل'}</p>`}
+ const bk=PV.h.length?`<button type="button" class="pm-bk" data-pm="ib" aria-label="رجوع إلى «${esc(pnm(PV.h[PV.h.length-1]))}»">→</button>`:'';
+ pcd.innerHTML=pmHead(esc(c.a)+peTag(c),`${c.n} · ${c.u} ساعات · ${lvn(c.v)}`).replace('<div class="pm-h">','<div class="pm-h">'+bk)+st+of+
+  sec('تحتاج قبلها',pre.length?(miss.length?'ينقصك '+miss.length:'أنجزتها كلها'):'',pre.length?`<div class="pi-l">${pre.map(x=>D.has(x)?row(x,'✓','y','منجزة'):row(x,'!','n','لم تُنجز')).join('')}</div>`:'<span class="pm-0">لا شيء، يمكن تسجيلها من البداية</span>')+
+  (co.length?sec('تُسجَّل معها','أو قبلها',`<div class="pi-l">${co.map(x=>row(x,'+','c',D.has(x)?'منجزة':'')).join('')}</div>`):'')+
+  sec('تفتح لك مباشرة',dir.length?mdd(dir.length):'',dir.length?`<div class="pi-l">${dir.map(x=>row(x,'←','u',D.has(x)?'منجزة':'')).join('')}</div>`:'<span class="pm-0">لا تعتمد عليها مادة أخرى في خطتك</span>')+
+  (all.length>dir.filter(x=>!D.has(x)).length?`<p class="pi-dn">وتعتمد عليها حتى نهاية الخطة <b>${mdd(all.length)}</b> لم تُنجزها بعد${all.length>=KEYN?'، فتأخيرها يؤخّر الكثير.':'.'}</p>`:'')+
+  `<div class="pm-f"><button type="button" data-pm="ie">تعديل متطلباتها أو استبدالها</button></div>`;
+ pcd.scrollTop=0}
+
 pem.addEventListener('click',e=>{const t=e.target.closest('button');if(e.target===pem){pmClose();return}if(!t||!PV)return;const d=t.dataset;
  if(d.pm=='x')pmClose();
+ else if(d.pmi){if(d.pmi!=PV.n)pmInfo(d.pmi,PV.h.concat(PV.n));pcd.querySelector('.pm-x').focus({preventScroll:true})}
+ else if(d.pm=='ib'){const h=PV.h.slice(),b=h.pop();pmInfo(b,h);pcd.querySelector('.pm-x').focus({preventScroll:true})}
+ else if(d.pm=='ie')pmCourse(PV.n);
  else if(d.pmk){PV.k=d.pmk;pcd.querySelectorAll('[data-pmk]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.pmk==PV.k));$('pmq').focus()}
  else if(d.pmr){const[k,x]=d.pmr.split('|');PV[k]=PV[k].filter(y=>y!=x);PV.e='';const q=$('pmq').value;pmC();$('pmq').value=q;pmList()}
  else if(d.pmo){const x=d.pmo,k=PV.k,o=k=='p'?'c':'p';PV[k].push(x);PV[o]=PV[o].filter(y=>y!=x);
@@ -1672,7 +1722,8 @@ pem.addEventListener('keydown',e=>{
   if(e.shiftKey&&a<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&a==f.length-1){e.preventDefault();f[0].focus()}}});
 
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('button');if(!t)return;
- if(t.id=='peo'){PEM=true;PECF=0;r1Keep();rPe()}
+ if(t.dataset.ci){e.preventDefault();pmInfo(t.dataset.ci)}
+ else if(t.id=='peo'){PEM=true;PECF=0;r1Keep();rPe()}
  else if(t.id=='pex'){PEM=false;PECF=0;r1Keep();rPe()}
  else if(t.id=='pea')pmPick('a');
  else if(t.id=='per'){if(!PECF){PECF=1;rPe();setTimeout(()=>{if(PECF){PECF=0;rPe()}},3500);return}
